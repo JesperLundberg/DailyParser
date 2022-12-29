@@ -9,15 +9,25 @@ public class ConfigurationRepository : IConfigurationRepository
         Configuration = configuration;
     }
 
-    public string Get(string key)
+    public string GetSetting(string key)
     {
-        var value = Configuration.GetValue<string>(key);
-
-        if (string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(key))
         {
-            throw new NullReferenceException();
+            throw new ArgumentNullException("Must provide a key");
         }
 
-        return value;
+        var settingToReturn = Environment.GetEnvironmentVariable(key);
+            
+        if (string.IsNullOrWhiteSpace(settingToReturn))
+        {
+            settingToReturn = Configuration.GetValue<string>(key.Replace("_", ":"));
+        }
+
+        if (string.IsNullOrWhiteSpace(settingToReturn))
+        {
+            throw new ArgumentException("Key not found in setting/environmental variable");
+        }
+        
+        return settingToReturn;            
     }
 }
