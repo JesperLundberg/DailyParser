@@ -13,7 +13,7 @@ builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
 // Add database context
 var configuration = new ConfigurationRepository(builder.Configuration);
 builder.Services.AddDbContextPool<GameContext>(optionsBuilder =>
-    optionsBuilder.UseSqlite(configuration.Get("dbConnection")));
+    optionsBuilder.UseSqlite(configuration.GetSetting("dbConnection")));
 
 // Build web host
 var app = builder.Build();
