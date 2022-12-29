@@ -4,5 +4,7 @@ namespace DataAccess.Repositories;
 
 public interface IDatabaseRepository
 {
-    IEnumerable<Game> GetAllGames();
+    Task<IEnumerable<Game>> GetAllGamesAsync();
+
+    Task<Game?> GetGameAsync(Guid gameId);
 }

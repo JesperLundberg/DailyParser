@@ -1,5 +1,6 @@
 ﻿using DataAccess.DatabaseContexts;
 using DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
@@ -12,13 +13,13 @@ public class DatabaseRepository : IDatabaseRepository
         GameContext = gameContext;
     }
 
-    public IEnumerable<Game> GetAllGames()
+    public async Task<IEnumerable<Game>> GetAllGamesAsync()
     {
-        return GameContext.Games.AsAsyncEnumerable().ToBlockingEnumerable();
+        return await GameContext.Games.ToListAsync();
     }
 
-    public Task<Game?> GetGameAsync(Guid gameId)
+    public async Task<Game?> GetGameAsync(Guid gameId)
     {
-        return GameContext.Games.FindAsync(gameId).AsTask();
+        return await GameContext.Games.FindAsync(gameId);
     }
 }
