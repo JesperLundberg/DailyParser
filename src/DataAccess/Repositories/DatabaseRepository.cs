@@ -16,4 +16,9 @@ public class DatabaseRepository : IDatabaseRepository
     {
         return GameContext.Games.AsAsyncEnumerable().ToBlockingEnumerable();
     }
+
+    public Task<Game?> GetGameAsync(Guid gameId)
+    {
+        return GameContext.Games.FindAsync(gameId).AsTask();
+    }
 }
