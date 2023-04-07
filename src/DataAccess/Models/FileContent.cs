@@ -2,6 +2,6 @@ namespace DataAccess.Models;
 
 public class FileContent
 {
-    private string FileName { get; set; }
-    private string Content { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
 }
