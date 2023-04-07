@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IConfigurationRepository, ConfigurationRepository>();
 builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
+builder.Services.AddSingleton<IFileSystemRepository, FileSystemRepository>();
 
 // Add database context
 var configuration = new ConfigurationRepository(builder.Configuration);
