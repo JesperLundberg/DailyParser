@@ -4,11 +4,11 @@ namespace DataAccess.Repositories;
 
 public class FileSystemRepository : IFileSystemRepository
 {
-    public Task<IEnumerable<string>> GetFileListAsync(string path)
+    public Task<IEnumerable<FileNameAndPath>> GetFileListAsync(string path)
     {
         var files = GetFilesRecursively(path);
 
-        throw new NotImplementedException();
+        return Task.FromResult(files);
     }
 
     private IEnumerable<FileNameAndPath> GetFilesRecursively(string path)
@@ -33,18 +33,18 @@ public class FileSystemRepository : IFileSystemRepository
         return files;
     }
 
-    public async Task<IEnumerable<FileContent>> GetFilesWithContentAsync(IEnumerable<string> files)
+    public async Task<IEnumerable<FileContent>> GetFilesWithContentAsync(IEnumerable<FileNameAndPath> files)
     {
         var fileContents = new List<FileContent>();
 
         foreach (var filePath in files)
         {
-            using var fileStream = new StreamReader(filePath);
+            using var fileStream = new StreamReader(filePath.FullPath);
 
             fileContents.Add(
                 new FileContent
                 {
-                    FileName = Path.GetFileName(filePath),
+                    FileName = filePath.Name,
                     Content = await fileStream.ReadToEndAsync()
                 }
             );

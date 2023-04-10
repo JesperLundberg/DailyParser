@@ -13,8 +13,9 @@ builder.Services.AddSingleton<IFileSystemRepository, FileSystemRepository>();
 
 // Add database context
 var configuration = new ConfigurationRepository(builder.Configuration);
-builder.Services.AddDbContextPool<GameContext>(optionsBuilder =>
-    optionsBuilder.UseSqlite(configuration.GetSetting("dbConnection")));
+builder.Services.AddDbContextPool<GameContext>(
+    optionsBuilder => optionsBuilder.UseSqlite(configuration.GetSetting("dbConnection"))
+);
 
 // Build web host
 var app = builder.Build();
@@ -34,9 +35,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // TODO: Run migrations?
 
