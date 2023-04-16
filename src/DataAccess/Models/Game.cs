@@ -1,4 +1,4 @@
-namespace DataAccess.Models;
+namespace DailyParser.DataAccess.Models;
 
 public class Game
 {

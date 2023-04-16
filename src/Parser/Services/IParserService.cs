@@ -1,4 +1,4 @@
-namespace Parser.Services;
+namespace DailyParser.Parser.Services;
 
 public interface IParserService
 {

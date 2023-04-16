@@ -1,28 +1,26 @@
-using Tests.Fakes;
+using DailyParser.DataAccess.Repositories;
+using DailyParser.Tests.Fakes;
 
 namespace DailyParser.Tests;
 
-public class Tests
+public class FileSystemRepositoryTests
 {
     [SetUp]
     public void Setup() { }
 
     [Test]
-    public void GetDirectories_ReturnsAllDirectories()
+    public async Task GetFileListAsync_ReturnsAllFiles()
     {
-        var filesystemRepository = new FileSystemRepositoryFake();
+        var filesystemRepository = new FileSystemRepository(new DirectoryFake());
 
-        // This is a useless test as it only tests the fake!
-        var result = filesystemRepository.GetDirectories("pathdoesnotmatterintest/");
+        var result = await filesystemRepository.GetFileListAsync("pathdoesnotmatterintest/");
 
-        Assert.AreEqual(3, result.Count());
+        Assert.AreEqual(8, result.Count());
     }
 
     [Test]
-    public void GetFilesRecursively_ReturnsAllFiles()
+    public void PassTest()
     {
-      var filesystemRepository = new FileSystemRepositoryFake();
-
-      var result = filesystemRepository.GetFileListAsync("pathdoesnotmatterintest/");
+      Assert.Pass();
     }
 }

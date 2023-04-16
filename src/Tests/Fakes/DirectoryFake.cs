@@ -1,13 +1,12 @@
-using DataAccess.Models;
-using DataAccess.Repositories;
+using DailyParser.DataAccess.Wrappers;
 
-namespace Tests.Fakes;
+namespace DailyParser.Tests.Fakes;
 
-public class FileSystemRepositoryFake : IFileSystemRepository
+public class DirectoryFake : IDirectory
 {
     private static int folderCount;
 
-    public IEnumerable<string> GetDirectories(string path)
+    public IEnumerable<string> EnumerateDirectories(string path)
     {
         var directoriesToReturn = folderCount switch
         {
@@ -21,7 +20,7 @@ public class FileSystemRepositoryFake : IFileSystemRepository
         return directoriesToReturn;
     }
 
-    public IEnumerable<string> GetFiles(string path)
+    public IEnumerable<string> EnumerateFiles(string path)
     {
         var filesToReturn = folderCount switch
         {
@@ -33,18 +32,5 @@ public class FileSystemRepositoryFake : IFileSystemRepository
         };
 
         return filesToReturn;
-    }
-
-    public Task<IEnumerable<FileNameAndPath>> GetFileListAsync(string path)
-    {
-        // TODO: Use the real one here but with fakes
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<FileContent>> GetFilesWithContentAsync(
-        IEnumerable<FileNameAndPath> files
-    )
-    {
-        throw new NotImplementedException();
     }
 }

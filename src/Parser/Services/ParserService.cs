@@ -1,6 +1,6 @@
-﻿using DataAccess.Repositories;
+﻿using DailyParser.DataAccess.Repositories;
 
-namespace Parser.Services;
+namespace DailyParser.Parser.Services;
 
 public class ParserService : IParserService
 {

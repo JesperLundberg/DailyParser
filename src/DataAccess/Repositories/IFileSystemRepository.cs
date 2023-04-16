@@ -1,6 +1,6 @@
-using DataAccess.Models;
+using DailyParser.DataAccess.Models;
 
-namespace DataAccess.Repositories;
+namespace DailyParser.DataAccess.Repositories;
 
 public interface IFileSystemRepository
 {

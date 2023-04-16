@@ -1,8 +1,8 @@
-﻿using DataAccess.DatabaseContexts;
-using DataAccess.Models;
+﻿using DailyParser.DataAccess.DatabaseContexts;
+using DailyParser.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Repositories;
+namespace DailyParser.DataAccess.Repositories;
 
 public class DatabaseRepository : IDatabaseRepository
 {
