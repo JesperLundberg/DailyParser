@@ -6,10 +6,12 @@ namespace DailyParser.DataAccess.Repositories;
 public class FileSystemRepository : IFileSystemRepository
 {
     private IDirectory Directory { get; set; }
+    private IFileReader FileReader { get; set; }
 
-    public FileSystemRepository(IDirectory directory)
+    public FileSystemRepository(IDirectory directory, IFileReader fileReader)
     {
         Directory = directory;
+        FileReader = fileReader;
     }
 
     public Task<IEnumerable<FileNameAndPath>> GetFileListAsync(string path)
@@ -27,13 +29,13 @@ public class FileSystemRepository : IFileSystemRepository
 
         foreach (var filePath in files)
         {
-            using var fileStream = new StreamReader(filePath.FullPath);
+            var fileContent = await FileReader.ReadFileAsync(filePath.FullPath);
 
             fileContents.Add(
                 new FileContent
                 {
                     FileName = filePath.Name,
-                    Content = await fileStream.ReadToEndAsync()
+                    Content = fileContent
                 }
             );
         }

@@ -11,16 +11,13 @@ public class FileSystemRepositoryTests
     [Test]
     public async Task GetFileListAsync_ReturnsAllFiles()
     {
-        var filesystemRepository = new FileSystemRepository(new DirectoryFake());
+        var filesystemRepository = new FileSystemRepository(new DirectoryFake(), new FileReaderFake());
 
         var result = await filesystemRepository.GetFileListAsync("pathdoesnotmatterintest/");
 
-        Assert.AreEqual(8, result.Count());
+        Assert.That(result.Count() == 8, "Number of files should have been 8 but was {0}", result.Count());
     }
 
-    [Test]
-    public void PassTest()
-    {
-      Assert.Pass();
-    }
+    // [Test]
+    // public async Task Get
 }
