@@ -1,3 +1,4 @@
+using DailyParser.DataAccess.Models;
 using DailyParser.DataAccess.Repositories;
 using DailyParser.Tests.Fakes;
 
@@ -5,19 +6,37 @@ namespace DailyParser.Tests;
 
 public class FileSystemRepositoryTests
 {
+    private IFileSystemRepository FileSystemRepository { get; set; } = null!;
+
     [SetUp]
-    public void Setup() { }
+    public void Setup()
+    {
+        FileSystemRepository = new FileSystemRepository(new DirectoryFake(), new FileReaderFake());
+    }
 
     [Test]
     public async Task GetFileListAsync_ReturnsAllFiles()
     {
-        var filesystemRepository = new FileSystemRepository(new DirectoryFake(), new FileReaderFake());
+        var result = await FileSystemRepository.GetFileListAsync("pathdoesnotmatterintest/");
 
-        var result = await filesystemRepository.GetFileListAsync("pathdoesnotmatterintest/");
-
-        Assert.That(result.Count() == 8, "Number of files should have been 8 but was {0}", result.Count());
+        Assert.That(
+            result.Count() == 8,
+            "Number of files should have been 8 but was {0}",
+            result.Count()
+        );
     }
 
-    // [Test]
-    // public async Task Get
+    [Test]
+    public async Task GetFileWithContentAsync_ReturnsFileWithExpectedContent()
+    {
+        var filesToGet = new List<FileNameAndPath>
+        {
+            new FileNameAndPath { Name = "NameOfFile", FullPath = "pathdoesnotmatterintest" }
+        };
+
+        var result = await FileSystemRepository.GetFilesWithContentAsync(filesToGet);
+
+        Assert.That(result.Count, Is.EqualTo(1));
+        Assert.That(result.First(x => x.FileName == "NameOfFile").Content, Is.EqualTo("Game That I Played 1"));
+    }
 }
