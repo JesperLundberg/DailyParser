@@ -1,14 +1,46 @@
-using DataAccess.Models;
+using DailyParser.DataAccess.Models;
+using DailyParser.DataAccess.Wrappers;
 
-namespace DataAccess.Repositories;
+namespace DailyParser.DataAccess.Repositories;
 
 public class FileSystemRepository : IFileSystemRepository
 {
-    public Task<IEnumerable<string>> GetFileListAsync(string path)
+    private IDirectory Directory { get; set; }
+    private IFileReader FileReader { get; set; }
+
+    public FileSystemRepository(IDirectory directory, IFileReader fileReader)
+    {
+        Directory = directory;
+        FileReader = fileReader;
+    }
+
+    public Task<IEnumerable<FileNameAndPath>> GetFileListAsync(string path)
     {
         var files = GetFilesRecursively(path);
 
-        throw new NotImplementedException();
+        return Task.FromResult(files);
+    }
+
+    public async Task<IEnumerable<FileContent>> GetFilesWithContentAsync(
+        IEnumerable<FileNameAndPath> files
+    )
+    {
+        var fileContents = new List<FileContent>();
+
+        foreach (var filePath in files)
+        {
+            var fileContent = await FileReader.ReadFileAsync(filePath.FullPath);
+
+            fileContents.Add(
+                new FileContent
+                {
+                    FileName = filePath.Name,
+                    Content = fileContent
+                }
+            );
+        }
+
+        return fileContents;
     }
 
     private IEnumerable<FileNameAndPath> GetFilesRecursively(string path)
@@ -31,25 +63,5 @@ public class FileSystemRepository : IFileSystemRepository
         }
 
         return files;
-    }
-
-    public async Task<IEnumerable<FileContent>> GetFilesWithContentAsync(IEnumerable<string> files)
-    {
-        var fileContents = new List<FileContent>();
-
-        foreach (var filePath in files)
-        {
-            using var fileStream = new StreamReader(filePath);
-
-            fileContents.Add(
-                new FileContent
-                {
-                    FileName = Path.GetFileName(filePath),
-                    Content = await fileStream.ReadToEndAsync()
-                }
-            );
-        }
-
-        return fileContents;
     }
 }

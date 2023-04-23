@@ -1,6 +1,6 @@
-using DataAccess.Models;
+using DailyParser.DataAccess.Models;
 
-namespace DataAccess.Repositories;
+namespace DailyParser.DataAccess.Repositories;
 
 public interface IDatabaseRepository
 {
@@ -15,4 +15,6 @@ public interface IDatabaseRepository
     Task<bool> CreateGameAsync(Game game);
 
     Task<bool> CreateGamesAsync(IEnumerable<Game> games);
+
+    Task<bool> SaveFilesWithContentAsync(IEnumerable<FileContent> filesWithContent);
 }

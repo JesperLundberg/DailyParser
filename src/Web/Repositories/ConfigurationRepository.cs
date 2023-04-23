@@ -1,4 +1,4 @@
-namespace Web.Repositories;
+namespace DailyParser.Web.Repositories;
 
 public class ConfigurationRepository : IConfigurationRepository
 {

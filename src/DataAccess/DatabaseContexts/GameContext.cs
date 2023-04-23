@@ -1,7 +1,7 @@
-using DataAccess.Models;
+using DailyParser.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.DatabaseContexts;
+namespace DailyParser.DataAccess.DatabaseContexts;
 
 public class GameContext : DbContext
 {

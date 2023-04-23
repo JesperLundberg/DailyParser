@@ -1,7 +1,8 @@
-using DataAccess.DatabaseContexts;
-using DataAccess.Repositories;
+using DailyParser.DataAccess.DatabaseContexts;
+using DailyParser.DataAccess.Repositories;
+using DailyParser.DataAccess.Wrappers;
 using Microsoft.EntityFrameworkCore;
-using Web.Repositories;
+using DailyParser.Web.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,12 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IConfigurationRepository, ConfigurationRepository>();
 builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
+builder.Services.AddSingleton<IDirectory, DirectoryWrapper>();
 builder.Services.AddSingleton<IFileSystemRepository, FileSystemRepository>();
 
 // Add database context
 var configuration = new ConfigurationRepository(builder.Configuration);
-builder.Services.AddDbContextPool<GameContext>(optionsBuilder =>
-    optionsBuilder.UseSqlite(configuration.GetSetting("dbConnection")));
+builder.Services.AddDbContextPool<GameContext>(
+    optionsBuilder => optionsBuilder.UseSqlite(configuration.GetSetting("dbConnection"))
+);
 
 // Build web host
 var app = builder.Build();
@@ -34,9 +37,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // TODO: Run migrations?
 

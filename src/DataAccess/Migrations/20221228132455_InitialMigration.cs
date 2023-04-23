@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DataAccess.Migrations
+namespace DailyParser.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration

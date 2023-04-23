@@ -1,11 +1,11 @@
-﻿using DataAccess.Repositories;
+﻿using DailyParser.DataAccess.Repositories;
 
-namespace Parser.Services;
+namespace DailyParser.Parser.Services;
 
 public class ParserService : IParserService
 {
-    private IDatabaseRepository DatabaseRepository { get; }
-    private IFileSystemRepository FileSystemRepository { get; }
+    private IDatabaseRepository DatabaseRepository { get; init; }
+    private IFileSystemRepository FileSystemRepository { get; init; }
 
     public ParserService(IDatabaseRepository databaseRepository,
         IFileSystemRepository fileSystemRepository)
@@ -22,6 +22,7 @@ public class ParserService : IParserService
         var filesWithContent = await FileSystemRepository.GetFilesWithContentAsync(files);
         
         // TODO: Save everything as a batch when it's done
+        await DatabaseRepository.SaveFilesWithContentAsync(filesWithContent);
 
         return true;
     }

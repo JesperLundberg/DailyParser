@@ -1,4 +1,4 @@
-namespace Web.Models;
+namespace DailyParser.Web.Models;
 
 public class ErrorViewModel
 {

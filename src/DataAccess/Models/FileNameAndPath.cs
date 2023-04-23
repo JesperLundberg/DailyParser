@@ -1,7 +1,7 @@
-namespace DataAccess.Models;
+namespace DailyParser.DataAccess.Models;
 
-public class FileNameAndPath
+public record FileNameAndPath
 {
-    public string Name { get; set; }
-    public string FullPath { get; set; }
+    public string Name { get; init; } = null!;
+    public string FullPath { get; init; } = null!;
 }

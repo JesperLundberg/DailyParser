@@ -1,10 +1,10 @@
-using DataAccess.Models;
+using DailyParser.DataAccess.Models;
 
-namespace DataAccess.Repositories;
+namespace DailyParser.DataAccess.Repositories;
 
 public interface IFileSystemRepository
 {
-   Task<IEnumerable<string>> GetFileListAsync(string path);
+   Task<IEnumerable<FileNameAndPath>> GetFileListAsync(string path);
 
-   Task<IEnumerable<FileContent>> GetFilesWithContentAsync(IEnumerable<string> files);
+   Task<IEnumerable<FileContent>> GetFilesWithContentAsync(IEnumerable<FileNameAndPath> files);
 }
