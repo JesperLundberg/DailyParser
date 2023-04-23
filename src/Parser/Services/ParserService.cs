@@ -1,4 +1,5 @@
-﻿using DailyParser.DataAccess.Repositories;
+﻿using DailyParser.DataAccess.Models;
+using DailyParser.DataAccess.Repositories;
 
 namespace DailyParser.Parser.Services;
 
@@ -20,10 +21,17 @@ public class ParserService : IParserService
 
         // TODO: This can be done async and in parallell
         var filesWithContent = await FileSystemRepository.GetFilesWithContentAsync(files);
-        
+        // TODO: Use parsing here
+
         // TODO: Save everything as a batch when it's done
         await DatabaseRepository.SaveFilesWithContentAsync(filesWithContent);
 
         return true;
+    }
+
+    public Task<IEnumerable<(string FileName, string ParsedText)>> ParseText(IEnumerable<FileContent> contentToBeParsed, string regexPattern)
+    {
+        
+        throw new NotImplementedException();
     }
 }
