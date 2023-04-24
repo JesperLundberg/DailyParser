@@ -16,5 +16,5 @@ public interface IDatabaseRepository
 
     Task<bool> CreateGamesAsync(IEnumerable<Game> games);
 
-    Task<bool> SaveFilesWithContentAsync(IEnumerable<FileContent> filesWithContent);
+    Task<bool> SaveFilesWithContentInDatabaseAsync(IEnumerable<FileContent> filesWithContent);
 }

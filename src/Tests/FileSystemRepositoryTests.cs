@@ -27,7 +27,20 @@ public class FileSystemRepositoryTests
     }
 
     [Test]
-    public async Task GetFileWithContentAsync_ReturnsFileWithExpectedContent()
+    public async Task GetFileWithContentAsync_ReturnsFileWithExpectedName()
+    {
+        var fileNameAndPath = new FileNameAndPath
+        {
+            Name = "NameOfFile",
+            FullPath = "pathdoesnotmatterintest"
+        };
+        var result = await FileSystemRepository.GetFileWithContentAsync(fileNameAndPath);
+
+        Assert.That(result.FileName, Is.EqualTo("NameOfFile"));
+    }
+
+    [Test]
+    public async Task GetFilesWithContentAsync_ReturnsFileWithExpectedContent()
     {
         var filesToGet = new List<FileNameAndPath>
         {
@@ -37,6 +50,9 @@ public class FileSystemRepositoryTests
         var result = await FileSystemRepository.GetFilesWithContentAsync(filesToGet);
 
         Assert.That(result.Count, Is.EqualTo(1));
-        Assert.That(result.First(x => x.FileName == "NameOfFile").Content, Is.EqualTo("Game That I Played 1"));
+        Assert.That(
+            result.First(x => x.FileName == "NameOfFile").Content,
+            Is.EqualTo("Game That I Played 1")
+        );
     }
 }

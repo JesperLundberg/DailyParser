@@ -1,4 +1,5 @@
-﻿using DailyParser.DataAccess.Models;
+﻿using System.Text.RegularExpressions;
+using DailyParser.DataAccess.Models;
 using DailyParser.DataAccess.Repositories;
 
 namespace DailyParser.Parser.Services;
@@ -8,8 +9,10 @@ public class ParserService : IParserService
     private IDatabaseRepository DatabaseRepository { get; init; }
     private IFileSystemRepository FileSystemRepository { get; init; }
 
-    public ParserService(IDatabaseRepository databaseRepository,
-        IFileSystemRepository fileSystemRepository)
+    public ParserService(
+        IDatabaseRepository databaseRepository,
+        IFileSystemRepository fileSystemRepository
+    )
     {
         DatabaseRepository = databaseRepository;
         FileSystemRepository = fileSystemRepository;
@@ -24,14 +27,21 @@ public class ParserService : IParserService
         // TODO: Use parsing here
 
         // TODO: Save everything as a batch when it's done
-        await DatabaseRepository.SaveFilesWithContentAsync(filesWithContent);
+        await DatabaseRepository.SaveFilesWithContentInDatabaseAsync(filesWithContent);
 
         return true;
     }
 
-    public Task<IEnumerable<(string FileName, string ParsedText)>> ParseText(IEnumerable<FileContent> contentToBeParsed, string regexPattern)
+    public Task<IEnumerable<(string FileName, string ParsedText)>> ParseTextAsync(
+        IEnumerable<FileContent> contentToBeParsed,
+        string regexPattern
+    )
     {
-        
-        throw new NotImplementedException();
+        // Get the parsed text from the content
+        var parsedText = contentToBeParsed.Select(
+            x => (x.FileName, ParsedText: Regex.Match(x.Content, regexPattern).Value)
+        );
+
+        return Task.FromResult(parsedText);
     }
 }
