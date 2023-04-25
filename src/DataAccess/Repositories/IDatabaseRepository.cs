@@ -8,13 +8,13 @@ public interface IDatabaseRepository
 
     Task<Game?> GetGameAsync(Guid gameId);
 
-    Task<IEnumerable<Game>> GetGamesByDateRangeAsync(DateOnly fromDate, DateOnly toDate);
+    Task<IEnumerable<Game>> GetGamesByDateRangeAsync(DateTime fromDate, DateTime toDate);
     
-    Task<IEnumerable<Game>> GetGamesByFromDateAsync(DateOnly fromDate);
+    Task<IEnumerable<Game>> GetGamesByFromDateAsync(DateTime fromDate);
 
     Task<bool> CreateGameAsync(Game game);
 
     Task<bool> CreateGamesAsync(IEnumerable<Game> games);
 
-    Task<bool> SaveFilesWithContentInDatabaseAsync(IEnumerable<FileContent> filesWithContent);
+    Task<bool> SaveFilesWithContentInDatabaseAsync<T>(IEnumerable<T> fileModelToSave) where T : Game;
 }

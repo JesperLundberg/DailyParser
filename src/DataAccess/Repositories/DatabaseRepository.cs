@@ -24,8 +24,8 @@ public class DatabaseRepository : IDatabaseRepository
     }
 
     public async Task<IEnumerable<Game>> GetGamesByDateRangeAsync(
-        DateOnly fromDate,
-        DateOnly toDate
+        DateTime fromDate,
+        DateTime toDate
     )
     {
         return await GameContext.Games
@@ -33,7 +33,7 @@ public class DatabaseRepository : IDatabaseRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Game>> GetGamesByFromDateAsync(DateOnly fromDate)
+    public async Task<IEnumerable<Game>> GetGamesByFromDateAsync(DateTime fromDate)
     {
         return await GameContext.Games.Where(game => game.Started > fromDate).ToListAsync();
     }
@@ -41,25 +41,34 @@ public class DatabaseRepository : IDatabaseRepository
     public async Task<bool> CreateGameAsync(Game game)
     {
         await GameContext.AddAsync(game);
-        var changedRows = await GameContext.SaveChangesAsync();
 
-        return changedRows != 0;
+        return await GameContext.SaveChangesAsync() != 0;
     }
 
     public async Task<bool> CreateGamesAsync(IEnumerable<Game> games)
     {
         await GameContext.Games.AddRangeAsync(games);
-        var changedRows = await GameContext.SaveChangesAsync();
 
-        return changedRows != 0;
+        return await GameContext.SaveChangesAsync() != 0;
     }
 
-    public Task<bool> SaveFilesWithContentInDatabaseAsync(IEnumerable<FileContent> filesWithContent)
+    public async Task<bool> SaveFilesWithContentInDatabaseAsync<T>(IEnumerable<> fileModelToSave)
+        where T : Game
     {
-        // TODO: Map FileContent to Game
+        // TODO: Make this general. Right now T does not matter as it's always of Game type
+        // TODO: Make this an extension method instead
+        var fileModels = fileModelToSave.Select(
+            fileModel =>
+                new Game
+                {
+                    Title = fileModel.Title,
+                    Started = fileModel.Started,
+                    Finished = fileModel.Finished,
+                }
+        );
 
         // TODO: Save Games in Database
-
-        throw new NotImplementedException();
+        await GameContext.Games.AddRangeAsync(fileModels);
+        return await GameContext.SaveChangesAsync() != 0;
     }
 }
