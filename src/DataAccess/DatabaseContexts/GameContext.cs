@@ -14,6 +14,6 @@ public class GameContext : DbContext
     {
         modelBuilder.Entity<Game>().ToTable("Games");
         modelBuilder.Entity<Game>().HasKey(key => key.Id);
-        modelBuilder.Entity<Game>().Property(p=>p.Title).IsRequired();
+        modelBuilder.Entity<Game>().Property(p=>p.Name).IsRequired();
     }
 }

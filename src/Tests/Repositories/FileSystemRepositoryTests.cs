@@ -2,7 +2,7 @@ using DailyParser.DataAccess.Models;
 using DailyParser.DataAccess.Repositories;
 using DailyParser.Tests.Fakes;
 
-namespace DailyParser.Tests;
+namespace DailyParser.Tests.Repositories;
 
 public class FileSystemRepositoryTests
 {

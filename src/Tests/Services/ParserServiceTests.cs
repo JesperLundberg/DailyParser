@@ -5,7 +5,7 @@ using DailyParser.Parser.Services;
 using DailyParser.Tests.Factories;
 using Microsoft.EntityFrameworkCore;
 
-namespace DailyParser.Tests;
+namespace DailyParser.Tests.Services;
 
 public class ParserServiceTests
 {

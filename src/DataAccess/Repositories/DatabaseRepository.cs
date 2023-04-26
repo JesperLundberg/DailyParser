@@ -29,13 +29,13 @@ public class DatabaseRepository : IDatabaseRepository
     )
     {
         return await GameContext.Games
-            .Where(game => game.Started > fromDate && game.Finished < toDate)
+            .Where(game => game.Date > fromDate && game.Date < toDate)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<Game>> GetGamesByFromDateAsync(DateTime fromDate)
     {
-        return await GameContext.Games.Where(game => game.Started > fromDate).ToListAsync();
+        return await GameContext.Games.Where(game => game.Date > fromDate).ToListAsync();
     }
 
     public async Task<bool> CreateGameAsync(Game game)
@@ -52,23 +52,28 @@ public class DatabaseRepository : IDatabaseRepository
         return await GameContext.SaveChangesAsync() != 0;
     }
 
-    public async Task<bool> SaveFilesWithContentInDatabaseAsync<T>(IEnumerable<> fileModelToSave)
-        where T : Game
+    public async Task<bool> SaveFilesWithContentInDatabaseAsync(
+        IEnumerable<FileContent> fileModelToSave
+    )
     {
-        // TODO: Make this general. Right now T does not matter as it's always of Game type
         // TODO: Make this an extension method instead
         var fileModels = fileModelToSave.Select(
             fileModel =>
-                new Game
-                {
-                    Title = fileModel.Title,
-                    Started = fileModel.Started,
-                    Finished = fileModel.Finished,
-                }
+                new Game(
+                    Id: default,
+                    fileModel.FileName,
+                    DateTime.TryParse(fileModel.FileName, out var date) ? date : default
+                )
         );
 
         // TODO: Save Games in Database
         await GameContext.Games.AddRangeAsync(fileModels);
         return await GameContext.SaveChangesAsync() != 0;
+    }
+
+    public Task<bool> SaveFilesWithContentInDatabaseAsync<T>(IEnumerable<T> fileModelToSave)
+        where T : Game
+    {
+        throw new NotImplementedException();
     }
 }

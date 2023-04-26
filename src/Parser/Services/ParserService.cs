@@ -32,7 +32,7 @@ public class ParserService : IParserService
         var parsedText = await ParseTextAsync(filesWithContent, RegEx.Game);
 
         // TODO: Save everything as a batch when it's done
-        await DatabaseRepository.SaveFilesWithContentInDatabaseAsync<Game>(filesWithContent);
+        // await DatabaseRepository.SaveFilesWithContentInDatabaseAsync<Game>(filesWithContent);
 
         return true;
     }
