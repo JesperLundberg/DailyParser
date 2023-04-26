@@ -1,5 +1,6 @@
 ﻿using DailyParser.DataAccess.DatabaseContexts;
 using DailyParser.DataAccess.Models;
+using DailyParser.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DailyParser.DataAccess.Repositories;
@@ -52,28 +53,22 @@ public class DatabaseRepository : IDatabaseRepository
         return await GameContext.SaveChangesAsync() != 0;
     }
 
-    public async Task<bool> SaveFilesWithContentInDatabaseAsync(
-        IEnumerable<FileContent> fileModelToSave
-    )
+    public Task<bool> SaveFilesWithContentInDatabaseAsync(IEnumerable<ParsedText> fileModelToSave)
     {
         // TODO: Make this an extension method instead
-        var fileModels = fileModelToSave.Select(
-            fileModel =>
-                new Game(
-                    Id: default,
-                    fileModel.FileName,
-                    DateTime.TryParse(fileModel.FileName, out var date) ? date : default
-                )
-        );
+        // var fileModels = fileModelToSave.Select(
+        //     fileModel =>
+        //         new Game(
+        //             Id: default,
+        //             fileModel.Name,
+        //             DateTime.TryParse(fileModel.FileName, out var date) ? date : default
+        //         )
+        // );
 
         // TODO: Save Games in Database
-        await GameContext.Games.AddRangeAsync(fileModels);
-        return await GameContext.SaveChangesAsync() != 0;
+        // await GameContext.Games.AddRangeAsync(fileModels);
+        // return await GameContext.SaveChangesAsync() != 0;
+        return Task.FromResult(true);
     }
 
-    public Task<bool> SaveFilesWithContentInDatabaseAsync<T>(IEnumerable<T> fileModelToSave)
-        where T : Game
-    {
-        throw new NotImplementedException();
-    }
 }

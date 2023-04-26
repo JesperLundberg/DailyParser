@@ -1,9 +1,7 @@
-using DailyParser.DataAccess.DatabaseContexts;
 using DailyParser.DataAccess.Repositories;
 using DailyParser.Parser.Constants;
 using DailyParser.Parser.Services;
 using DailyParser.Tests.Factories;
-using Microsoft.EntityFrameworkCore;
 
 namespace DailyParser.Tests.Services;
 
@@ -16,18 +14,15 @@ public class ParserServiceTests
     [SetUp]
     public void Setup()
     {
-        var dbContextOptionsBuilder = new DbContextOptionsBuilder<GameContext>();
-        dbContextOptionsBuilder.UseInMemoryDatabase(databaseName: "DailyParser");
-
         // Setup is run before each test so the database is recreated each time
-        var gameContext = new GameContext(dbContextOptionsBuilder.Options);
+        var gameContext = DatabaseContextFactory.Create();
         DatabaseRepository = new DatabaseRepository(gameContext);
 
         ParserService = new ParserService(DatabaseRepository, FileSystemRepository);
     }
 
     [Test]
-    public async Task ParseTextAsync_WithContentNotMatchingSearchedForText_ReturnsAListOfAllFilesWithEmptyParsedText()
+    public async Task ParseTextAsync_WithContentNotMatchingSearchedForText_ReturnsAListOfAllFilesWithEmptyTexts()
     {
         // Arrange
         var parserService = new ParserService(DatabaseRepository, FileSystemRepository);
@@ -39,11 +34,11 @@ public class ParserServiceTests
         // Assert
         Assert.That(result.Count, Is.EqualTo(3));
         CollectionAssert.AllItemsAreNotNull(result);
-        CollectionAssert.IsEmpty(result.First().ParsedText);
+        CollectionAssert.IsEmpty(result.First().Texts);
     }
 
     [Test]
-    public async Task ParseTextAsync_WithContentMatchingSearchedForText_ReturnsAListOfAllFilesWithMatchedTextAsParsedText()
+    public async Task ParseTextAsync_WithContentMatchingSearchedForText_ReturnsAListOfAllFilesWithMatchedTextAsTexts()
     {
         // Arrange
         var fileContent = FileContentFactory.CreateValidFileContents(3);
@@ -53,12 +48,12 @@ public class ParserServiceTests
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count()));
-        Assert.That(result.First().ParsedText.First(), Is.EqualTo("Primordia"));
-        Assert.That(result.First().ParsedText.Last(), Is.EqualTo("Outcast"));
+        Assert.That(result.First().Texts.First(), Is.EqualTo("Primordia"));
+        Assert.That(result.First().Texts.Last(), Is.EqualTo("Outcast"));
     }
 
     [Test]
-    public async Task ParseTextAsync_WithMixedContentMatchingSearchedForText_ReturnsAListOfAllFilesWithMatchedTextAsParsedText()
+    public async Task ParseTextAsync_WithMixedContentMatchingSearchedForText_ReturnsAListOfAllFilesWithMatchedTextAsTexts()
     {
         // Arrange
         var fileContent = FileContentFactory.CreateValidFileContents(1).ToList();
@@ -69,8 +64,8 @@ public class ParserServiceTests
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count));
-        Assert.That(result.First().ParsedText.First(), Is.EqualTo("Primordia"));
-        Assert.That(result.First().ParsedText.Last(), Is.EqualTo("Outcast"));
-        Assert.That(result.Last().ParsedText, Is.Empty);
+        Assert.That(result.First().Texts.First(), Is.EqualTo("Primordia"));
+        Assert.That(result.First().Texts.Last(), Is.EqualTo("Outcast"));
+        Assert.That(result.Last().Texts, Is.Empty);
     }
 }
