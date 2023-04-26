@@ -12,10 +12,13 @@ public static class FileContentFactory
             {
                 FileName = Guid.NewGuid().ToString(),
                 Content =
-                    @$"#### Vad spelar jag?
+                    @$"
+                    Text that is not used with whitespaces after     
+                    #### Vad spelar jag?
                     Primordia
                     Outcast
-                    ---"
+                    ---
+                    other irrelevant text here"
             };
         }
     }
