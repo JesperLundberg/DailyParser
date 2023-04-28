@@ -15,8 +15,8 @@ public class ParserServiceTests
     public void Setup()
     {
         // Setup is run before each test so the database is recreated each time
-        var gameContext = DatabaseContextFactory.Create();
-        DatabaseRepository = new DatabaseRepository(gameContext);
+        var dayContext = DatabaseContextFactory.Create();
+        DatabaseRepository = new DatabaseRepository(dayContext);
 
         ParserService = new ParserService(DatabaseRepository, FileSystemRepository);
     }

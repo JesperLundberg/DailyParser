@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DailyParser.DataAccess.Migrations
 {
-    [DbContext(typeof(GameContext))]
+    [DbContext(typeof(DayContext))]
     [Migration("20221228132455_InitialMigration")]
     partial class InitialMigration
     {
