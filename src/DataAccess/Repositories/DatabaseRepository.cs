@@ -40,7 +40,8 @@ public class DatabaseRepository : IDatabaseRepository
     }
 
     // TODO: Is this even needed anymore? Should do it the way the below one does anyway
-    // TODO: Possibly keep this as a way to add multiple games at once but call the below one to actually add
+    // Possibly keep this as a way to add multiple games at once but call the below one to actually add
+    //
     // public async Task<bool> CreateGamesAsync(IEnumerable<ParsedDay> games)
     // {
     //     await GameContext.ParsedDays.AddRangeAsync(games);

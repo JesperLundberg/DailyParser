@@ -55,4 +55,116 @@ public class DatabaseRepositoryTests
         Assert.That(result.Count(), Is.EqualTo(1));
         Assert.That(result.First(), Is.EqualTo(day));
     }
+
+    [Test]
+    public async Task GetDayAsync_WithValidExisting_ReturnsDay()
+    {
+        // Arrange
+        var day = new ParsedDay
+        {
+            Date = DateTime.Now.AddDays(-1),
+            Games = new List<Game> { new Game { Name = "Primordia" } }
+        };
+
+        await DayContext.ParsedDays.AddAsync(day);
+        await DayContext.SaveChangesAsync();
+
+        // Act
+        var result = await DatabaseRepository.GetDayAsync(day.Id);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(day));
+    }
+
+    [Test]
+    public async Task GetDayAsync_WithNonExistingId_ReturnsNull()
+    {
+        // Arrange
+        var day = new ParsedDay
+        {
+            Date = DateTime.Now.AddDays(-1),
+            Games = new List<Game> { new Game { Name = "Primordia" } }
+        };
+
+        await DayContext.ParsedDays.AddAsync(day);
+        await DayContext.SaveChangesAsync();
+
+        // Act
+        var result = await DatabaseRepository.GetDayAsync(default);
+
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public async Task GetDaysByDateRangeAsync_WithValidDateRange_ReturnsDaysWithinRange()
+    {
+        // Arrange
+        var days = new List<ParsedDay>
+        {
+            new ParsedDay
+            {
+                Date = DateTime.Now.AddDays(-1),
+                Games = new List<Game> { new Game { Name = "Primordia" } }
+            },
+            new ParsedDay
+            {
+                Date = DateTime.Now.AddDays(-3),
+                Games = new List<Game> { new Game { Name = "Outcast" } }
+            },
+            new ParsedDay
+            {
+                Date = DateTime.Now.AddDays(3),
+                Games = new List<Game> { new Game { Name = "The Surge 2" } }
+            },
+        };
+
+        await DayContext.ParsedDays.AddRangeAsync(days);
+        await DayContext.SaveChangesAsync();
+
+        // Act
+        var result = await DatabaseRepository.GetDaysByDateRangeAsync(
+            DateTime.Now.AddDays(-2),
+            DateTime.Now.AddDays(2)
+        );
+
+        // Assert
+        Assert.That(result.Count(), Is.EqualTo(1));
+        Assert.That(result.First(), Is.EqualTo(days.First()));
+    }
+
+    [Test]
+    public async Task GetDaysByFromDateAsync_WithValidDate_ReturnsDaysAfterDate()
+    {
+        // Arrange
+        var days = new List<ParsedDay>
+        {
+            new ParsedDay
+            {
+                Date = DateTime.Now.AddDays(-1),
+                Games = new List<Game> { new Game { Name = "Primordia" } }
+            },
+            new ParsedDay
+            {
+                Date = DateTime.Now.AddDays(-3),
+                Games = new List<Game> { new Game { Name = "Outcast" } }
+            },
+            new ParsedDay
+            {
+                Date = DateTime.Now.AddDays(3),
+                Games = new List<Game> { new Game { Name = "The Surge 2" } }
+            },
+        };
+
+        await DayContext.ParsedDays.AddRangeAsync(days);
+        await DayContext.SaveChangesAsync();
+
+        // Act
+        var result = await DatabaseRepository.GetDaysByFromDateAsync(DateTime.Now.AddDays(-2));
+
+        // Assert
+        Assert.That(result.Count(), Is.EqualTo(2));
+        Assert.That(result.First(), Is.EqualTo(days.First()));
+        Assert.That(result.Last(), Is.EqualTo(days.Last()));
+    }
 }
