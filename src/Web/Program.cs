@@ -3,15 +3,20 @@ using DailyParser.DataAccess.Repositories;
 using DailyParser.DataAccess.Wrappers;
 using Microsoft.EntityFrameworkCore;
 using DailyParser.Web.Repositories;
+using DailyParser.Parser.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddSingleton<IConfigurationRepository, ConfigurationRepository>();
-builder.Services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
 builder.Services.AddSingleton<IDirectory, DirectoryWrapper>();
-builder.Services.AddSingleton<IFileSystemRepository, FileSystemRepository>();
+builder.Services.AddSingleton<IFileReader, FileReaderWapper>();
+
+builder.Services.AddScoped<IDatabaseRepository, DatabaseRepository>();
+builder.Services.AddScoped<IFileSystemRepository, FileSystemRepository>();
+builder.Services.AddScoped<IParserService, ParserService>();
 
 // Add database context
 var configuration = new ConfigurationRepository(builder.Configuration);

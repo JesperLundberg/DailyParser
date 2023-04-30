@@ -1,6 +1,6 @@
 namespace DailyParser.DataAccess.Models;
 
-public record ParsedDay
+public class ParsedDay
 {
     public Guid Id { get; set; }
     public DateTime Date { get; init; }
