@@ -7,68 +7,53 @@ namespace DailyParser.DataAccess.Repositories;
 
 public class DatabaseRepository : IDatabaseRepository
 {
-    private GameContext GameContext { get; }
+    private DayContext DayContext { get; }
 
-    public DatabaseRepository(GameContext gameContext)
+    public DatabaseRepository(DayContext dayContext)
     {
-        GameContext = gameContext;
+        DayContext = dayContext;
     }
 
-    public async Task<IEnumerable<Game>> GetAllGamesAsync()
+    public async Task<IEnumerable<ParsedDay>> GetAllDaysAsync()
     {
-        return await GameContext.Games.ToListAsync();
+        return await DayContext.ParsedDays.ToListAsync();
     }
 
-    public async Task<Game?> GetGameAsync(Guid gameId)
+    public async Task<ParsedDay?> GetDayAsync(Guid gameId)
     {
-        return await GameContext.Games.FindAsync(gameId);
+        return await DayContext.ParsedDays.FindAsync(gameId);
     }
 
-    public async Task<IEnumerable<Game>> GetGamesByDateRangeAsync(
+    public async Task<IEnumerable<ParsedDay>> GetDaysByDateRangeAsync(
         DateTime fromDate,
         DateTime toDate
     )
     {
-        return await GameContext.Games
+        return await DayContext.ParsedDays
             .Where(game => game.Date > fromDate && game.Date < toDate)
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Game>> GetGamesByFromDateAsync(DateTime fromDate)
+    public async Task<IEnumerable<ParsedDay>> GetDaysByFromDateAsync(DateTime fromDate)
     {
-        return await GameContext.Games.Where(game => game.Date > fromDate).ToListAsync();
+        return await DayContext.ParsedDays.Where(game => game.Date > fromDate).ToListAsync();
     }
 
-    public async Task<bool> CreateGameAsync(Game game)
+    public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
     {
-        await GameContext.AddAsync(game);
+        var fileModels = fileModelToSave.Select(
+            fileModel =>
+                new ParsedDay
+                {
+                    Id = default,
+                    Date = DateTime.TryParse(fileModel.Name, out var date) ? date : default,
+                    Games = fileModel.Texts
+                        .Select(x => new Game { Id = default, Name = x })
+                        .ToList()
+                }
+        );
 
-        return await GameContext.SaveChangesAsync() != 0;
+        await DayContext.ParsedDays.AddRangeAsync(fileModels);
+        return await DayContext.SaveChangesAsync() != 0;
     }
-
-    public async Task<bool> CreateGamesAsync(IEnumerable<Game> games)
-    {
-        await GameContext.Games.AddRangeAsync(games);
-
-        return await GameContext.SaveChangesAsync() != 0;
-    }
-
-    public Task<bool> SaveFilesWithContentInDatabaseAsync(IEnumerable<ParsedText> fileModelToSave)
-    {
-        // TODO: Make this an extension method instead
-        // var fileModels = fileModelToSave.Select(
-        //     fileModel =>
-        //         new Game(
-        //             Id: default,
-        //             fileModel.Name,
-        //             DateTime.TryParse(fileModel.FileName, out var date) ? date : default
-        //         )
-        // );
-
-        // TODO: Save Games in Database
-        // await GameContext.Games.AddRangeAsync(fileModels);
-        // return await GameContext.SaveChangesAsync() != 0;
-        return Task.FromResult(true);
-    }
-
 }

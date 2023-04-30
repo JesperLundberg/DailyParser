@@ -3,17 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DailyParser.DataAccess.DatabaseContexts;
 
-public class GameContext : DbContext
+public class DayContext : DbContext
 {
-    public DbSet<Game> Games { get; set; }
+    public DbSet<ParsedDay> ParsedDays { get; set; }
 
-    public GameContext(DbContextOptions<GameContext> options)
+    public DayContext(DbContextOptions<DayContext> options)
         : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Game>().ToTable("Games");
-        modelBuilder.Entity<Game>().HasKey(key => key.Id);
-        modelBuilder.Entity<Game>().Property(p=>p.Name).IsRequired();
+        modelBuilder.Entity<ParsedDay>().ToTable("ParsedDays");
+        modelBuilder.Entity<ParsedDay>().HasKey(key => key.Id);
+        modelBuilder.Entity<ParsedDay>().Property(p => p.Date).IsRequired();
     }
 }

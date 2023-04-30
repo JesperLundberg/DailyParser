@@ -1,3 +1,7 @@
 namespace DailyParser.DataAccess.Models;
 
-public record Game(Guid Id, string Name, DateTime Date);
+public record Game
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+};

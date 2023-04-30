@@ -15,7 +15,7 @@ builder.Services.AddSingleton<IFileSystemRepository, FileSystemRepository>();
 
 // Add database context
 var configuration = new ConfigurationRepository(builder.Configuration);
-builder.Services.AddDbContextPool<GameContext>(
+builder.Services.AddDbContextPool<DayContext>(
     optionsBuilder => optionsBuilder.UseSqlite(configuration.GetSetting("dbConnection"))
 );
 

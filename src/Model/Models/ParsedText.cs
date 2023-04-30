@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace DailyParser.Models.Models;
 
 public record ParsedText
