@@ -26,7 +26,7 @@ public class DatabaseRepositoryTests
         var parsedText = ParsedTextFactory.CreateValidParsedTexts(1);
 
         // Act
-        var result = await DatabaseRepository.SaveFilesWithContentInDatabaseAsync(parsedText);
+        var result = await DatabaseRepository.CreateParsedDayAsync(parsedText);
 
         // Assert
         Assert.That(result, Is.True);

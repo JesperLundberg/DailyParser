@@ -13,9 +13,5 @@ public interface IDatabaseRepository
 
     Task<IEnumerable<ParsedDay>> GetDaysByFromDateAsync(DateTime fromDate);
 
-    // Task<bool> CreateGamesAsync(IEnumerable<ParsedDay> games);
-
-    Task<bool> SaveFilesWithContentInDatabaseAsync(
-        IEnumerable<ParsedText> fileModelToSave
-    );
+    Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave);
 }

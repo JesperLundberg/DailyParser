@@ -39,19 +39,7 @@ public class DatabaseRepository : IDatabaseRepository
         return await DayContext.ParsedDays.Where(game => game.Date > fromDate).ToListAsync();
     }
 
-    // TODO: Is this even needed anymore? Should do it the way the below one does anyway
-    // Possibly keep this as a way to add multiple games at once but call the below one to actually add
-    //
-    // public async Task<bool> CreateGamesAsync(IEnumerable<ParsedDay> games)
-    // {
-    //     await GameContext.ParsedDays.AddRangeAsync(games);
-    //
-    //     return await GameContext.SaveChangesAsync() != 0;
-    // }
-
-    public async Task<bool> SaveFilesWithContentInDatabaseAsync(
-        IEnumerable<ParsedText> fileModelToSave
-    )
+    public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
     {
         var fileModels = fileModelToSave.Select(
             fileModel =>
