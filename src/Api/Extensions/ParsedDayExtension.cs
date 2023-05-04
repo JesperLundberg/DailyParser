@@ -11,6 +11,7 @@ public static class ParsedDayExtension
     {
       Id = parsedDay.Id,
       Date = parsedDay.Date,
+      Games = parsedDay.Games.ToDto(),
     };
   }
 

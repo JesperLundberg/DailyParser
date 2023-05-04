@@ -16,6 +16,7 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<IEnumerable<ParsedDay>> GetAllDaysAsync()
     {
+      // TODO: Include games in return result as well
         return await DayContext.ParsedDays.ToListAsync();
     }
 
