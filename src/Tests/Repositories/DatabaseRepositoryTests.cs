@@ -36,7 +36,7 @@ public class DatabaseRepositoryTests
     }
 
     [Test]
-    public async Task GetAllDaysAsync_ReturnsAllDaysInDatabase()
+    public async Task GetAllDaysAsync_WithDataInDatabase_ReturnsAllDaysInDatabase()
     {
         // Arrange
         var day = new ParsedDay
@@ -54,6 +54,18 @@ public class DatabaseRepositoryTests
         // Assert
         Assert.That(result.Count(), Is.EqualTo(1));
         Assert.That(result.First(), Is.EqualTo(day));
+    }
+
+    [Test]
+    public async Task GetAllDaysAsync_WithNoDataInDatabase_ReturnsEmptyList()
+    {
+        // Arrange
+
+        // Act
+        var result = await DatabaseRepository.GetAllDaysAsync();
+
+        // Assert
+        Assert.That(result.Count(), Is.EqualTo(0));
     }
 
     [Test]

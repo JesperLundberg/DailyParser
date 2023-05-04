@@ -18,7 +18,7 @@ builder.Services.AddScoped<IParserService, ParserService>();
 // Add database context
 builder.Services.AddDbContextPool<DayContext>(
     optionsBuilder =>
-        optionsBuilder.UseSqlServer(builder.Configuration.GetValue<string>("dbConnection"))
+        optionsBuilder.UseSqlServer(builder.Configuration.GetValue<string>("DbConnection"))
 );
 
 builder.Services.AddControllers();
@@ -47,22 +47,7 @@ if (
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<DayContext>();
     await db.Database.MigrateAsync();
-
-    // Add a dummy day if there are no days in the database
-    if (!db.ParsedDays.Any())
-    {
-        await db.ParsedDays.AddAsync(
-            new ParsedDay
-            {
-                Date = DateTime.Now,
-                Games = new List<Game> { new Game { Name = "Outcast" } }
-            }
-        );
-        await db.SaveChangesAsync();
-    }
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
