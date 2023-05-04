@@ -1,4 +1,5 @@
 using DailyParser.DataAccess.DatabaseContexts;
+using DailyParser.DataAccess.Models;
 using DailyParser.DataAccess.Repositories;
 using DailyParser.DataAccess.Wrappers;
 using DailyParser.Parser.Services;
@@ -7,23 +8,21 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// builder.Services.AddSingleton<IConfigurationRepository, ConfigurationRepository>();
-builder.Services.AddSingleton<IDirectory, DirectoryWrapper>();
-builder.Services.AddSingleton<IFileReader, FileReaderWapper>();
+builder.Services.AddScoped<IDirectory, DirectoryWrapper>();
+builder.Services.AddScoped<IFileReader, FileReaderWapper>();
 
 builder.Services.AddScoped<IDatabaseRepository, DatabaseRepository>();
 builder.Services.AddScoped<IFileSystemRepository, FileSystemRepository>();
 builder.Services.AddScoped<IParserService, ParserService>();
 
 // Add database context
-// var configuration = new ConfigurationRepository(builder.Configuration);
-
 builder.Services.AddDbContextPool<DayContext>(
-    optionsBuilder => optionsBuilder.UseSqlite(builder.Configuration.GetValue<string>("dbConnection"))
+    optionsBuilder =>
+        optionsBuilder.UseSqlServer(builder.Configuration.GetValue<string>("dbConnection"))
 );
 
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,6 +34,32 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+if (
+    string.Equals(
+        bool.TrueString,
+        builder.Configuration.GetValue<string>("Settings:RunMigrationsAtStartUp"),
+        StringComparison.InvariantCultureIgnoreCase
+    )
+)
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<DayContext>();
+    await db.Database.MigrateAsync();
+
+    // Add a dummy day if there are no days in the database
+    if (!db.ParsedDays.Any())
+    {
+        await db.ParsedDays.AddAsync(
+            new ParsedDay
+            {
+                Date = DateTime.Now,
+                Games = new List<Game> { new Game { Name = "Outcast" } }
+            }
+        );
+        await db.SaveChangesAsync();
+    }
 }
 
 app.UseHttpsRedirection();
