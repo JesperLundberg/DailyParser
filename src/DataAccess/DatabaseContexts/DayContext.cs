@@ -29,8 +29,13 @@ public class DayContextFactory : IDesignTimeDbContextFactory<DayContext>
 {
     public DayContext CreateDbContext(string[] args)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory().Replace("DataAccess", "Api"))
+            .AddJsonFile("appsettings.json")
+            .Build();
+
         var optionsBuilder = new DbContextOptionsBuilder<DayContext>();
-        var connectionstring = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("dbConnection").Value;
+        optionsBuilder.UseSqlServer(configuration.GetConnectionString("DbConnection"));
 
         return new DayContext(optionsBuilder.Options);
     }
