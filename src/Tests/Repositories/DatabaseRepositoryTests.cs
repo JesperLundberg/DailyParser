@@ -69,6 +69,31 @@ public class DatabaseRepositoryTests
     }
 
     [Test]
+    public async Task GetAllDaysAsync_WithGames_ReturnsFullGameInfoWithDay()
+    {
+        // Arrange
+        var day = new ParsedDay
+        {
+            Date = DateTime.Now.AddDays(-1),
+            Games = new List<Game>
+            {
+                new Game { Name = "Primordia" },
+                new Game { Name = "Outcast" }
+            }
+        };
+
+        DayContext.ParsedDays.Add(day);
+        await DayContext.SaveChangesAsync();
+
+        // Act
+        var result = await DatabaseRepository.GetAllDaysAsync();
+
+        // Assert
+        Assert.That(result.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(result.First().Games.Last().Name, Is.EqualTo("Outcast"));
+    }
+
+    [Test]
     public async Task GetDayAsync_WithValidExisting_ReturnsDay()
     {
         // Arrange
