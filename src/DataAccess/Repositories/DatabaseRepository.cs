@@ -16,12 +16,15 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<IEnumerable<ParsedDay>> GetAllDaysAsync()
     {
-        return await DayContext.ParsedDays.Include(x => x.Games).ToListAsync();
+        return await DayContext.ParsedDays.Include(p => p.Games).ToListAsync();
     }
 
     public async Task<ParsedDay?> GetDayAsync(Guid dayId)
     {
-        return await DayContext.ParsedDays.FindAsync(dayId);
+        return await DayContext.ParsedDays
+            .Include(p => p.Games)
+            .Where(d => d.Id == dayId)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<ParsedDay>> GetDaysByDateRangeAsync(
@@ -30,13 +33,17 @@ public class DatabaseRepository : IDatabaseRepository
     )
     {
         return await DayContext.ParsedDays
+            .Include(p => p.Games)
             .Where(game => game.Date > fromDate && game.Date < toDate)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<ParsedDay>> GetDaysByFromDateAsync(DateTime fromDate)
     {
-        return await DayContext.ParsedDays.Where(game => game.Date > fromDate).ToListAsync();
+        return await DayContext.ParsedDays
+            .Include(p => p.Games)
+            .Where(game => game.Date > fromDate)
+            .ToListAsync();
     }
 
     public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
