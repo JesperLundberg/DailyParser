@@ -38,7 +38,7 @@ if (app.Environment.IsDevelopment())
 
 if (
     string.Equals(
-        bool.TrueString,
+        bool.TrueString.ToLower(),
         builder.Configuration.GetValue<string>("Settings:RunMigrationsAtStartUp"),
         StringComparison.InvariantCultureIgnoreCase
     )
@@ -47,6 +47,37 @@ if (
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<DayContext>();
     await db.Database.MigrateAsync();
+}
+
+if (
+    string.Equals(
+        bool.TrueString.ToLower(),
+        builder.Configuration.GetValue<string>("Settings:SeedDatabaseAtStartUp"),
+        StringComparison.InvariantCultureIgnoreCase
+    )
+)
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<DayContext>();
+
+    if (await db.ParsedDays.AnyAsync())
+    {
+        return;
+    }
+
+    await db.ParsedDays.AddAsync(
+        new ParsedDay
+        {
+            Date = DateTime.Now,
+            Games = new List<Game>
+            {
+                new() { Name = "Game 1" },
+                new() { Name = "Game 2" }
+            }
+        }
+    );
+
+    await db.SaveChangesAsync();
 }
 
 app.UseAuthorization();
