@@ -16,13 +16,12 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<IEnumerable<ParsedDay>> GetAllDaysAsync()
     {
-      // TODO: Include games in return result as well
-        return await DayContext.ParsedDays.ToListAsync();
+        return await DayContext.ParsedDays.Include(x => x.Games).ToListAsync();
     }
 
-    public async Task<ParsedDay?> GetDayAsync(Guid gameId)
+    public async Task<ParsedDay?> GetDayAsync(Guid dayId)
     {
-        return await DayContext.ParsedDays.FindAsync(gameId);
+        return await DayContext.ParsedDays.FindAsync(dayId);
     }
 
     public async Task<IEnumerable<ParsedDay>> GetDaysByDateRangeAsync(
