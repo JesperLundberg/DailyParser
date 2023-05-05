@@ -54,6 +54,7 @@ public class DatabaseRepositoryTests
         // Assert
         Assert.That(result.Count(), Is.EqualTo(1));
         Assert.That(result.First(), Is.EqualTo(day));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
     }
 
     [Test]
@@ -91,10 +92,12 @@ public class DatabaseRepositoryTests
         // Assert
         Assert.That(result.First().Games.First().Name, Is.EqualTo("Primordia"));
         Assert.That(result.First().Games.Last().Name, Is.EqualTo("Outcast"));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(DayContext.ParsedDays.First().Games.Last().Name, Is.EqualTo("Outcast"));
     }
 
     [Test]
-    public async Task GetDayAsync_WithValidExisting_ReturnsDay()
+    public async Task GetDayAsync_WithValidExisting_ReturnsDayWithGameInfo()
     {
         // Arrange
         var day = new ParsedDay
@@ -111,6 +114,7 @@ public class DatabaseRepositoryTests
 
         // Assert
         Assert.That(result, Is.EqualTo(day));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
     }
 
     [Test]
@@ -131,6 +135,7 @@ public class DatabaseRepositoryTests
 
         // Assert
         Assert.That(result, Is.Null);
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
     }
 
     [Test]
@@ -168,6 +173,8 @@ public class DatabaseRepositoryTests
         // Assert
         Assert.That(result.Count(), Is.EqualTo(1));
         Assert.That(result.First(), Is.EqualTo(days.First()));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(DayContext.ParsedDays.Last().Games.Last().Name, Is.EqualTo("The Surge 2"));
     }
 
     [Test]
@@ -203,5 +210,7 @@ public class DatabaseRepositoryTests
         Assert.That(result.Count(), Is.EqualTo(2));
         Assert.That(result.First(), Is.EqualTo(days.First()));
         Assert.That(result.Last(), Is.EqualTo(days.Last()));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(DayContext.ParsedDays.Last().Games.Last().Name, Is.EqualTo("The Surge 2"));
     }
 }
