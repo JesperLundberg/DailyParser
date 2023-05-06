@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  #    frontend:
+  #      container_name: "signe.rs.frontend"
+  #      image: "signe.rs.frontend"
+  #      ports:
+  #          - 7001:80
+  #      build: ../../signe-rs-frontend
+    # api:
+    #     container_name: "dailyparser.api"
+    #     image: "signe.rs.api"
+    #     ports:
+    #         - 7000:80
+    #         - 8081:443
+    #     build: ../src/
+    #     environment:
+    #         # - ASPNETCORE_ENVIRONMENT=Development
+    #     depends_on:
+    #         - db
+    db:
+        container_name: "dailyparser.db"
+        image: "mcr.microsoft.com/azure-sql-edge"
+        ports:
+            - 1433:1433
+        environment:
+            SA_PASSWORD: "pAssword1234("
+            ACCEPT_EULA: "Y"

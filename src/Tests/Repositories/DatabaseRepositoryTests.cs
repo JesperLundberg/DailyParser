@@ -36,7 +36,7 @@ public class DatabaseRepositoryTests
     }
 
     [Test]
-    public async Task GetAllDaysAsync_ReturnsAllDaysInDatabase()
+    public async Task GetAllDaysAsync_WithDataInDatabase_ReturnsAllDaysInDatabase()
     {
         // Arrange
         var day = new ParsedDay
@@ -54,10 +54,50 @@ public class DatabaseRepositoryTests
         // Assert
         Assert.That(result.Count(), Is.EqualTo(1));
         Assert.That(result.First(), Is.EqualTo(day));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
     }
 
     [Test]
-    public async Task GetDayAsync_WithValidExisting_ReturnsDay()
+    public async Task GetAllDaysAsync_WithNoDataInDatabase_ReturnsEmptyList()
+    {
+        // Arrange
+
+        // Act
+        var result = await DatabaseRepository.GetAllDaysAsync();
+
+        // Assert
+        Assert.That(result.Count(), Is.EqualTo(0));
+    }
+
+    [Test]
+    public async Task GetAllDaysAsync_WithGames_ReturnsFullGameInfoWithDay()
+    {
+        // Arrange
+        var day = new ParsedDay
+        {
+            Date = DateTime.Now.AddDays(-1),
+            Games = new List<Game>
+            {
+                new Game { Name = "Primordia" },
+                new Game { Name = "Outcast" }
+            }
+        };
+
+        DayContext.ParsedDays.Add(day);
+        await DayContext.SaveChangesAsync();
+
+        // Act
+        var result = await DatabaseRepository.GetAllDaysAsync();
+
+        // Assert
+        Assert.That(result.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(result.First().Games.Last().Name, Is.EqualTo("Outcast"));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(DayContext.ParsedDays.First().Games.Last().Name, Is.EqualTo("Outcast"));
+    }
+
+    [Test]
+    public async Task GetDayAsync_WithValidExisting_ReturnsDayWithGameInfo()
     {
         // Arrange
         var day = new ParsedDay
@@ -74,6 +114,7 @@ public class DatabaseRepositoryTests
 
         // Assert
         Assert.That(result, Is.EqualTo(day));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
     }
 
     [Test]
@@ -94,6 +135,7 @@ public class DatabaseRepositoryTests
 
         // Assert
         Assert.That(result, Is.Null);
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
     }
 
     [Test]
@@ -131,6 +173,8 @@ public class DatabaseRepositoryTests
         // Assert
         Assert.That(result.Count(), Is.EqualTo(1));
         Assert.That(result.First(), Is.EqualTo(days.First()));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(DayContext.ParsedDays.Last().Games.Last().Name, Is.EqualTo("The Surge 2"));
     }
 
     [Test]
@@ -166,5 +210,7 @@ public class DatabaseRepositoryTests
         Assert.That(result.Count(), Is.EqualTo(2));
         Assert.That(result.First(), Is.EqualTo(days.First()));
         Assert.That(result.Last(), Is.EqualTo(days.Last()));
+        Assert.That(DayContext.ParsedDays.First().Games.First().Name, Is.EqualTo("Primordia"));
+        Assert.That(DayContext.ParsedDays.Last().Games.Last().Name, Is.EqualTo("The Surge 2"));
     }
 }

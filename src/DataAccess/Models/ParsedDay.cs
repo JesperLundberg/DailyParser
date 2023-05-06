@@ -4,5 +4,5 @@ public class ParsedDay
 {
     public Guid Id { get; set; }
     public DateTime Date { get; init; }
-    public IEnumerable<Game> Games { get; init; } = Enumerable.Empty<Game>();
+    public List<Game> Games { get; init; } = new();
 }

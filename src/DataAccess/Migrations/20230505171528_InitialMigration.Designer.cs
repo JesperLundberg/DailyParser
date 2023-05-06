@@ -4,6 +4,7 @@ using DailyParser.DataAccess.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(DayContext))]
-    partial class DayContextModelSnapshot : ModelSnapshot
+    [Migration("20230505171528_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +35,7 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ParsedDayId")
+                    b.Property<Guid?>("ParsedDayId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -58,13 +61,9 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DailyParser.DataAccess.Models.Game", b =>
                 {
-                    b.HasOne("DailyParser.DataAccess.Models.ParsedDay", "ParsedDay")
+                    b.HasOne("DailyParser.DataAccess.Models.ParsedDay", null)
                         .WithMany("Games")
-                        .HasForeignKey("ParsedDayId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ParsedDay");
+                        .HasForeignKey("ParsedDayId");
                 });
 
             modelBuilder.Entity("DailyParser.DataAccess.Models.ParsedDay", b =>

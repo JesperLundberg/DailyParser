@@ -1,6 +1,7 @@
 using DailyParser.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace DailyParser.DataAccess.DatabaseContexts;
 
@@ -14,13 +15,12 @@ public class DayContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ParsedDay>().ToTable("ParsedDays");
         modelBuilder.Entity<ParsedDay>().HasKey(key => key.Id);
         modelBuilder.Entity<ParsedDay>().Property(p => p.Date).IsRequired();
         modelBuilder.Entity<ParsedDay>().HasMany(p => p.Games);
 
-        modelBuilder.Entity<Game>().ToTable("Games");
         modelBuilder.Entity<Game>().HasKey(key => key.Id);
+        modelBuilder.Entity<Game>().HasOne(g => g.ParsedDay);
     }
 }
 
@@ -28,8 +28,13 @@ public class DayContextFactory : IDesignTimeDbContextFactory<DayContext>
 {
     public DayContext CreateDbContext(string[] args)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory().Replace("DataAccess", "Api"))
+            .AddJsonFile("appsettings.json")
+            .Build();
+
         var optionsBuilder = new DbContextOptionsBuilder<DayContext>();
-        optionsBuilder.UseSqlite("dayDb");
+        optionsBuilder.UseSqlServer(configuration.GetConnectionString("DbConnection"));
 
         return new DayContext(optionsBuilder.Options);
     }
