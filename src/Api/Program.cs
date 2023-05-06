@@ -60,24 +60,22 @@ if (
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<DayContext>();
 
-    if (await db.ParsedDays.AnyAsync())
+    if (!await db.ParsedDays.AnyAsync())
     {
-        return;
-    }
-
-    await db.ParsedDays.AddAsync(
-        new ParsedDay
-        {
-            Date = DateTime.Now,
-            Games = new List<Game>
+        await db.ParsedDays.AddAsync(
+            new ParsedDay
             {
-                new() { Name = "Game 1" },
-                new() { Name = "Game 2" }
+                Date = DateTime.Now,
+                Games = new List<Game>
+                {
+                    new() { Name = "Game 1" },
+                    new() { Name = "Game 2" }
+                }
             }
-        }
-    );
+        );
 
-    await db.SaveChangesAsync();
+        await db.SaveChangesAsync();
+    }
 }
 
 app.UseAuthorization();

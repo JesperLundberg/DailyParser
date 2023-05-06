@@ -25,7 +25,7 @@ public class DayController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ParsedDayDto>> GetById([FromQuery] Guid id)
+    public async Task<ActionResult<ParsedDayDto>> GetById(Guid id)
     {
         var day = await DatabaseRepository.GetDayAsync(id);
 
@@ -35,5 +35,24 @@ public class DayController : ControllerBase
         }
 
         return Ok(day.ToDto());
+    }
+
+    [HttpGet("fromdate/{date}")]
+    public async Task<ActionResult<IEnumerable<ParsedDayDto>>> GetByFromDate(DateTime date)
+    {
+        var days = await DatabaseRepository.GetDaysByFromDateAsync(date);
+
+        return Ok(days.ToDto());
+    }
+
+    [HttpGet("daterange/{fromDate}/{toDate}")]
+    public async Task<ActionResult<IEnumerable<ParsedDayDto>>> GetByDateRange(
+        DateTime fromDate,
+        DateTime toDate
+    )
+    {
+        var days = await DatabaseRepository.GetDaysByDateRangeAsync(fromDate, toDate);
+
+        return Ok(days.ToDto());
     }
 }
