@@ -1,4 +1,5 @@
 ﻿using DailyParser.DataAccess.DatabaseContexts;
+using DailyParser.DataAccess.Extensions;
 using DailyParser.DataAccess.Models;
 using DailyParser.Models.Models;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,7 @@ public class DatabaseRepository : IDatabaseRepository
     {
         return await DayContext.ParsedDays
             .Include(p => p.Games)
-            .Where(game => game.Date > fromDate && game.Date < toDate)
+            .Where(game => game.Date.GetOnlyDate() >= fromDate.GetOnlyDate() && game.Date.GetOnlyDate() <= toDate.GetOnlyDate())
             .ToListAsync();
     }
 
@@ -42,7 +43,7 @@ public class DatabaseRepository : IDatabaseRepository
     {
         return await DayContext.ParsedDays
             .Include(p => p.Games)
-            .Where(game => game.Date > fromDate)
+            .Where(game => game.Date.GetOnlyDate() >= fromDate.GetOnlyDate())
             .ToListAsync();
     }
 
@@ -53,7 +54,7 @@ public class DatabaseRepository : IDatabaseRepository
                 new ParsedDay
                 {
                     Id = default,
-                    Date = DateTime.TryParse(fileModel.Name, out var date) ? date : default,
+                    Date = DateTime.TryParse(fileModel.Name, out var date) ? date.GetOnlyDate() : default,
                     Games = fileModel.Texts
                         .Select(x => new Game { Id = default, Name = x })
                         .ToList()
