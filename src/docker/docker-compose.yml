@@ -1,22 +1,21 @@
 version: "3.9"
 services:
-  #    frontend:
-  #      container_name: "signe.rs.frontend"
-  #      image: "signe.rs.frontend"
-  #      ports:
-  #          - 7001:80
-  #      build: ../../signe-rs-frontend
-    # api:
-    #     container_name: "dailyparser.api"
-    #     image: "signe.rs.api"
-    #     ports:
-    #         - 7000:80
-    #         - 8081:443
-    #     build: ../src/
-    #     environment:
-    #         # - ASPNETCORE_ENVIRONMENT=Development
-    #     depends_on:
-    #         - db
+     # frontend:
+     #   container_name: "dailyparser.frontend"
+     #   image: "dailyparser.frontend"
+     #   ports:
+     #       - 3000:80
+     #   build: ../src/Frontend
+    api:
+        container_name: "dailyparser.api"
+        image: "dailyparser.api"
+        ports:
+            - 5000:80
+        build: ../
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+        depends_on:
+            - db
     db:
         container_name: "dailyparser.db"
         image: "mcr.microsoft.com/azure-sql-edge"
