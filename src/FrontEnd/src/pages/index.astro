@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
+
+const res = await fetch('http://localhost:5000/api/day/getall')
+const data = await res.json()
 ---
 
 <Layout title="Welcome to Astro.">
@@ -10,7 +13,29 @@ import Card from '../components/Card.astro';
 			To get started, open the directory <code>src/pages</code> in your project.<br />
 			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
 		</p>
-		<ul role="list" class="link-card-grid">
+    <!-- <h2>Here's some days</h2>
+    <ul>
+      {data.map((day) => (
+        <li>{day.date}</li>
+      ))}
+
+      {data[0].games.map((game) => (
+        <li>{game.name}</li>
+        ))}
+    -->
+
+    <ul role="list" class="link-card-grid">
+      {data.map((day) => (
+         <Card
+          href="https://docs.astro.build/"
+          title={day.date}
+          body="Learn how Astro works and explore the official API docs."
+        />
+      ))}
+
+			    </ul>
+
+    <!-- <ul role="list" class="link-card-grid">
 			<Card
 				href="https://docs.astro.build/"
 				title="Documentation"
@@ -31,7 +56,8 @@ import Card from '../components/Card.astro';
 				title="Community"
 				body="Come say hi to our amazing Discord community. ❤️"
 			/>
-		</ul>
+      </ul>
+    -->
 	</main>
 </Layout>
 
