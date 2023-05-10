@@ -78,6 +78,13 @@ if (
     }
 }
 
+app.UseCors(
+    options => options
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+);
+
 app.UseAuthorization();
 
 app.MapControllers();

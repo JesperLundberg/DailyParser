@@ -2,11 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 
-const res = await fetch('http://localhost:5000/api/day/getall')
-const data = await res.json()
+const result = await fetch('http://localhost:5000/api/day/getall')
+const data = await result.json()
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="DailyParser home">
 	<main>
 		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
 		<p class="instructions">
@@ -14,11 +14,11 @@ const data = await res.json()
 			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
 		</p>
 
-    <ul role="list" class="link-card-grid">
+    <ul role="list" class=" link-card-grid">
       {data.map((day) => (
          <Card
-          href="https://docs.astro.build/"
-          title={day.date.split("T")[0]}
+         href={'/game/' + day.id}
+          title={day.date}
           body="Games below!"
           list={day.games}
         />

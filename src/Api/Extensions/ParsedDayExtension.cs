@@ -10,7 +10,7 @@ public static class ParsedDayExtension
     return new ParsedDayDto
     {
       Id = parsedDay.Id,
-      Date = parsedDay.Date,
+      Date = parsedDay.Date.ToShortDateString(),
       Games = parsedDay.Games.ToDto(),
     };
   }
