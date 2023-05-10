@@ -2,10 +2,10 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 WORKDIR /source
 
-COPY Api/ Api/
-COPY DataAccess/ DataAccess/
-COPY Model/ Model/
-COPY Parser/ Parser/
+COPY src/Api/ Api/
+COPY src/DataAccess/ DataAccess/
+COPY src/Model/ Model/
+COPY src/Parser/ Parser/
 RUN dotnet restore Api/Api.csproj
 
 RUN dotnet publish Api/Api.csproj -c release -o /app
