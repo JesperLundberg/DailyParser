@@ -3,9 +3,10 @@ export interface Props {
 	title: string;
 	body: string;
 	href: string;
+  list: [];
 }
 
-const { href, title, body } = Astro.props;
+const { href, title, body, list } = Astro.props;
 ---
 
 <li class="link-card">
@@ -15,7 +16,12 @@ const { href, title, body } = Astro.props;
 			<span>&rarr;</span>
 		</h2>
 		<p>
-			{body}
+    <h3>{body}</h3>
+      <ul>
+        {list.map((item) => (
+          <li>{item.name}</li>
+        ))}
+      </ul>
 		</p>
 	</a>
 </li>
@@ -48,6 +54,9 @@ const { href, title, body } = Astro.props;
 		font-size: 1.25rem;
 		transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 	}
+  h3 {
+    color: purple;
+  }
 	p {
 		margin-top: 0.5rem;
 		margin-bottom: 0;

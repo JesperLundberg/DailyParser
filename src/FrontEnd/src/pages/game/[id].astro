@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const result = await fetch('http://localhost:5000/api/day/getall')
+  const data = await result.json()
+
+  return  data.map((day) => ({
+    params: { id: day.id },
+    props: { day }
+  }))
+ 
+}
+
+const { id, frontmatter } = Astro.props.day;
+
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+    <div class="pt-6 md:p-8 text-center md:t space-y-4">
+      <div id="idTag" hidden>{id}</div>
+      <h1 class="text-lg font-medium">Lets play some games!</h1>
+      <day class=""></day>
+      <br/>
+      <games class=""></games>
+    </div>
+	</main>
+</Layout>
+
+<script>
+  const id = document.querySelector('#idTag').textContent
+
+  const thisDay = await fetch('http://localhost:5000/api/day/' + id)
+  const thisDayData = await thisDay.json()
+
+  document.querySelector('day').textContent = thisDayData.date
+  document.querySelector('games').textContent += thisDayData.games[0].name
+</script>

@@ -65,7 +65,7 @@ if (
         await db.ParsedDays.AddAsync(
             new ParsedDay
             {
-                Date = DateTime.Now,
+                Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                 Games = new List<Game>
                 {
                     new() { Name = "Game 1" },
@@ -77,6 +77,13 @@ if (
         await db.SaveChangesAsync();
     }
 }
+
+app.UseCors(
+    options => options
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+);
 
 app.UseAuthorization();
 
