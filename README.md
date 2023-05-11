@@ -12,6 +12,6 @@ Run `sudo docker-compose` in solution root.
 
 - [ ] Fix Frontend docker container
 - [ ] Parser can't yet be triggered, must be triggerable
-- [ ] Transition to alpine container for backend (ubuntu is too big)
+- [X] Transition to alpine container for backend (ubuntu is too big)
 - [ ] Make the API more RESTful
 - [ ] Consolidate the namespaces? At least take a look and decide on what to do!

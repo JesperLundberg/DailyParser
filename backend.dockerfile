@@ -15,11 +15,13 @@ RUN dotnet publish Api/Api.csproj -c release -o /app
 #       production the real cert is to be mounted instead.
 # RUN dotnet dev-certs https -ep /source/api/cert.pfx -p password1234
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-jammy
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine
 # WORKDIR /https
 # COPY --from=build /source/api/cert.pfx .
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+RUN apk add --no-cache icu-libs
 
 WORKDIR /app
 COPY --from=build /app .
 
-ENTRYPOINT ["dotnet", "Api.dll", "-r linux-x64"]
+ENTRYPOINT ["dotnet", "Api.dll", "-r linux-musl-x64"]
