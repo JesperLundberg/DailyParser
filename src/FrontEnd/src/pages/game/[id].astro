@@ -28,7 +28,7 @@ const { id, frontmatter } = Astro.props.day;
 	</main>
 </Layout>
 
-<script>
+<script client:visible>
   const id = document.querySelector('#idTag').textContent
 
   const thisDay = await fetch('http://localhost:5000/api/day/' + id)
