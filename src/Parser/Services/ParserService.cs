@@ -23,17 +23,13 @@ public class ParserService : IParserService
     public async Task<bool> ParseIntoDbAsync(string pathToFiles)
     {
         // TODO: Make this work with all types of parsers. Rewrite this to use IParsers like in Edströms
-
         var files = await FileSystemRepository.GetFileListAsync(pathToFiles);
 
-        // TODO: This can be done async and in parallell
         var filesWithContent = await FileSystemRepository.GetFilesWithContentAsync(files);
 
-        // TODO: Use parsing here
         var parsedText = await ParseTextAsync(filesWithContent, RegEx.Game);
 
-        // TODO: Save everything as a batch when it's done
-        // await DatabaseRepository.SaveFilesWithContentInDatabaseAsync<Game>(filesWithContent);
+        await DatabaseRepository.CreateParsedDayAsync(parsedText);
 
         return true;
     }

@@ -21,33 +21,27 @@ public class FileSystemRepository : IFileSystemRepository
         return Task.FromResult(files);
     }
 
-    public async Task<FileContent> GetFileWithContentAsync(
-        FileNameAndPath file
-    )
+    public async Task<FileContent> GetFileWithContentAsync(FileNameAndPath file)
     {
         var fileContent = await FileReader.ReadFileAsync(file.FullPath);
 
-        return new FileContent
-        {
-            FileName = file.Name,
-            Content = fileContent
-        };
+        return new FileContent { FileName = file.Name, Content = fileContent };
     }
 
     public async Task<IEnumerable<FileContent>> GetFilesWithContentAsync(
         IEnumerable<FileNameAndPath> files
     )
     {
-        var fileContents = new List<FileContent>();
+        var fileTasks = new List<Task<FileContent>>();
 
         foreach (var file in files)
         {
-            var fileContent = await GetFileWithContentAsync(file);
-
-            fileContents.Add(fileContent);
+            fileTasks.Add(GetFileWithContentAsync(file));
         }
 
-        return fileContents;
+        await Task.WhenAll(fileTasks);
+
+        return fileTasks.Select(x => x.Result);
     }
 
     private IEnumerable<FileNameAndPath> GetFilesRecursively(string path)
