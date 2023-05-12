@@ -19,9 +19,7 @@ public class FileSystemRepositoryTests
     {
         var result = await FileSystemRepository.GetFileListAsync("pathdoesnotmatterintest/");
 
-        Assert.That(
-            result.Count(), Is.EqualTo(8)
-        );
+        Assert.That(result.Count(), Is.EqualTo(8));
     }
 
     [Test]

@@ -1,17 +1,19 @@
 version: "3.9"
 services:
-     # frontend:
-     #   container_name: "dailyparser.frontend"
-     #   image: "dailyparser.frontend"
-     #   ports:
-     #       - 3000:80
-     #   build: ../src/Frontend
+    frontend:
+      container_name: "dailyparser.frontend"
+      image: "dailyparser.frontend"
+      ports:
+          - 3000:80
+      build:
+          dockerfile: frontend.dockerfile
     api:
         container_name: "dailyparser.api"
         image: "dailyparser.api"
         ports:
             - 5000:80
-        build: ../
+        build: 
+            dockerfile: backend.dockerfile
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
         depends_on:

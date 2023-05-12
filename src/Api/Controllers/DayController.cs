@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DailyParser.Api.Controllers;
 
 [ApiController]
-[Route("api/day")]
+[Route("api/days")]
 public class DayController : ControllerBase
 {
     public IDatabaseRepository DatabaseRepository { get; set; }
@@ -16,7 +16,7 @@ public class DayController : ControllerBase
         DatabaseRepository = databaseRepository;
     }
 
-    [HttpGet("getall")]
+    [HttpGet()]
     public async Task<ActionResult<IEnumerable<ParsedDayDto>>> GetAllDays()
     {
         var days = await DatabaseRepository.GetAllDaysAsync();
@@ -45,7 +45,7 @@ public class DayController : ControllerBase
         return Ok(days.ToDto());
     }
 
-    [HttpGet("daterange/{fromDate}/{toDate}")]
+    [HttpGet("fromdate/{fromDate}/todate/{toDate}")]
     public async Task<ActionResult<IEnumerable<ParsedDayDto>>> GetByDateRange(
         DateTime fromDate,
         DateTime toDate
