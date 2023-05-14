@@ -2,7 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 
-const result = await fetch('http://localhost:80/api/days')
+const result = await fetch('http://api:80/api/days')
+//const result = await fetch('http://localhost:5000/api/days')
 const data = await result.json()
 ---
 
