@@ -11,14 +11,16 @@ const games = thisDayData.games;
 ---
 
 <Layout title="Welcome to Astro.">
+  <div id="date" class="text-center">{thisDayData.date}</div>
 	<main>
-    <div class="pt-6 md:p-8 text-center md:t space-y-4">
-      <div id="date" class="">{thisDayData.date}</div>
+    <figure class="drop-shadow-md md:flex bg-slate-100 rounded-xl p-8 md:p-0 dark:bg-slate-800">
+      <div class="pt-6 md:p-8 text-center md:t space-y-4">
 
-      {games.map( (game) => (
-        <div id={game.name.replace(/\s/g, "")} class="">{game.name}</div>
-      ))}
+        {games.map((game) => (
+          <div id={game.name.replace(/\s/g, "")} class="">{game.name}</div>
+        ))}
 
-    </div>
+      </div>
+    </figure>
 	</main>
 </Layout>
