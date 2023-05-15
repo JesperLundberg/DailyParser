@@ -1,39 +1,24 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-export async function getStaticPaths() {
-  const result = await fetch('http://localhost:5000/api/day/getall')
-  const data = await result.json()
+const id = Astro.params.id;
+const API_BASE_PATH = import.meta.env.API_BASE_PATH;
 
-  return  data.map((day) => ({
-    params: { id: day.id },
-    props: { day }
-  }))
- 
-}
+const thisDay = await fetch(import.meta.env.API_BASE_PATH + 'days/' + id);
+const thisDayData = await thisDay.json();
 
-const { id, frontmatter } = Astro.props.day;
-
+const games = thisDayData.games;
 ---
 
 <Layout title="Welcome to Astro.">
 	<main>
     <div class="pt-6 md:p-8 text-center md:t space-y-4">
-      <div id="idTag" hidden>{id}</div>
-      <h1 class="text-lg font-medium">Lets play some games!</h1>
-      <day class=""></day>
-      <br/>
-      <games class=""></games>
+      <div id="date" class="">{thisDayData.date}</div>
+
+      {games.map( (game) => (
+        <div id={game.name.replace(/\s/g, "")} class="">{game.name}</div>
+      ))}
+
     </div>
 	</main>
 </Layout>
-
-<script client:visible>
-  const id = document.querySelector('#idTag').textContent
-
-  const thisDay = await fetch('http://localhost:5000/api/day/' + id)
-  const thisDayData = await thisDay.json()
-
-  document.querySelector('day').textContent = thisDayData.date
-  document.querySelector('games').textContent += thisDayData.games[0].name
-</script>
