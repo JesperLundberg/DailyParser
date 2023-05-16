@@ -24,6 +24,7 @@ public class ParserService : IParserService
     {
         // TODO: Make this work with all types of parsers. Rewrite this to use IParsers like in Edströms
         var files = await FileSystemRepository.GetFileListAsync(pathToFiles);
+        Console.WriteLine($"Found {files.Count()} files");
 
         var filesWithContent = await FileSystemRepository.GetFilesWithContentAsync(files);
 

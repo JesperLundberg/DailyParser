@@ -49,6 +49,9 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
     {
+        // TODO: Do not save a new day if it already exists, update it instead
+        // Find a day by date, if it exists, update it, if not, create a new one
+
         var fileModels = fileModelToSave.Select(
             fileModel =>
                 new ParsedDay

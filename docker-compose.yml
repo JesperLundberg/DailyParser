@@ -17,7 +17,7 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
         volumes:
-          - ~/Dropbox/Obsidian/daily/:/files/
+          - /home/jesper/Dropbox/Obsidian/daily/:/files/
         depends_on:
             - db
     db:

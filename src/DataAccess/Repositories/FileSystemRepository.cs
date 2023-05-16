@@ -60,7 +60,9 @@ public class FileSystemRepository : IFileSystemRepository
 
         foreach (var directory in subDirectories)
         {
-            files.AddRange(GetFilesRecursively(Path.Join(path, directory)));
+            Console.WriteLine($"Getting files in {directory}");
+            Console.WriteLine($"Path: {path}, directory: {directory}");
+            files.AddRange(GetFilesRecursively(directory));
         }
 
         return files;
