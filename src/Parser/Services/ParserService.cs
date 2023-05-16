@@ -29,9 +29,9 @@ public class ParserService : IParserService
 
         var parsedText = await ParseTextAsync(filesWithContent, RegEx.Game);
 
-        await DatabaseRepository.CreateParsedDayAsync(parsedText);
+        var result = await DatabaseRepository.CreateParsedDayAsync(parsedText);
 
-        return true;
+        return result;
     }
 
     public Task<IEnumerable<ParsedText>> ParseTextAsync(
