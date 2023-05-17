@@ -25,30 +25,35 @@ public class FileSystemRepository : IFileSystemRepository
     {
         var fileContent = await FileReader.ReadFileAsync(file.FullPath);
 
-        return new FileContent { FileName = file.Name, Content = fileContent };
+        return new FileContent
+        {
+            FileName = Path.GetFileName(file.Name).Replace(".md", string.Empty),
+            Content = fileContent
+        };
     }
 
     public async Task<IEnumerable<FileContent>> GetFilesWithContentAsync(
         IEnumerable<FileNameAndPath> files
     )
     {
-        var fileTasks = new List<Task<FileContent>>();
+        // var fileTasks = new List<Task<FileContent>>();
+        var filesToReturn = new List<FileContent>();
 
         foreach (var file in files)
         {
-            fileTasks.Add(GetFileWithContentAsync(file));
+            filesToReturn.Add(await GetFileWithContentAsync(file));
         }
 
-        await Task.WhenAll(fileTasks);
+        // await Task.WhenAll(fileTasks);
 
-        return fileTasks.Select(x => x.Result);
+        return filesToReturn;
     }
 
     private IEnumerable<FileNameAndPath> GetFilesRecursively(string path)
     {
         var files = Directory
             .EnumerateFiles(path)
-            .Select(x => new FileNameAndPath { Name = x, FullPath = Path.Join(path, x) })
+            .Select(x => new FileNameAndPath { Name = x, FullPath = x })
             .ToList();
 
         var subDirectories = Directory.EnumerateDirectories(path);
@@ -60,8 +65,6 @@ public class FileSystemRepository : IFileSystemRepository
 
         foreach (var directory in subDirectories)
         {
-            Console.WriteLine($"Getting files in {directory}");
-            Console.WriteLine($"Path: {path}, directory: {directory}");
             files.AddRange(GetFilesRecursively(directory));
         }
 

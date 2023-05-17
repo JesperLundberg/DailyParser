@@ -22,12 +22,29 @@ public class DirectoryFake : IDirectory
 
     public IEnumerable<string> EnumerateFiles(string path)
     {
+        var randomDate = DateTime.Now.AddDays(new Random().Next(-500, -100));
         var filesToReturn = folderCount switch
         {
-            1 => new[] { "file1.md", "file2.md", "file3.md" },
-            2 => new[] { "file4.md" },
-            3 => new[] { "file5.md", "file6.md" },
-            4 => new[] { "file7.md", "file8.md" },
+            1
+                => new[]
+                {
+                    $"/folder1/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md",
+                    $"/folder1/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md",
+                    $"/folder1/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md"
+                },
+            2 => new[] { $"/folder2/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md" },
+            3
+                => new[]
+                {
+                    $"/folder3/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md",
+                    $"/folder3/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md"
+                },
+            4
+                => new[]
+                {
+                    $"/folder4/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md",
+                    $"/folder4/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md"
+                },
             _ => Enumerable.Empty<string>()
         };
 

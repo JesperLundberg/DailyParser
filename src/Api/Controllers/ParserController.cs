@@ -20,7 +20,6 @@ public class ParserController : ControllerBase
     public async Task<ActionResult<bool>> TriggerParseAsync()
     {
         var path = Configuration.GetValue<string>("PathToFiles");
-        Console.WriteLine($"Path to files: {path}");
 
         var result = await ParserService.ParseIntoDbAsync(path!);
 
