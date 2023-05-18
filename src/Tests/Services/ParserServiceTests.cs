@@ -106,4 +106,30 @@ public class ParserServiceTests
         var result = DayContext.ParsedDays.ToList();
         Assert.That(result.Count(), Is.EqualTo(8));
     }
+
+    [Test]
+    public async Task ParseIntoDb_WithExistingDayInDatabase_UpdatesExistingDayAndCreatesRest()
+    {
+        // Arrange
+        var existingDay = new ParsedDay
+        {
+            Date = DateTime.Now.AddDays(-1),
+            Games = new List<Game>
+            {
+                new Game { Name = "GameThatDoesNotExist" },
+                new Game { Name = "GameThatDoesNotExist2" }
+            }
+        };
+        DayContext.ParsedDays.Add(existingDay);
+        DayContext.SaveChanges();
+
+        // Act
+        await ParserService.ParseIntoDbAsync("pathDoesNotMatter");
+
+        // Assert
+        var result = DayContext.ParsedDays.ToList();
+        Assert.That(result.Count(), Is.EqualTo(9));
+        Assert.That(result.First().Games.First().Name, Is.EqualTo("GameThatDoesNotExist"));
+        Assert.That(result.First().Games.Last().Name, Is.EqualTo("GameThatDoesNotExist2"));
+    }
 }

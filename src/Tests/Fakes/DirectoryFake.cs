@@ -28,7 +28,7 @@ public class DirectoryFake : IDirectory
             1
                 => new[]
                 {
-                    $"/folder1/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md",
+                    $"/folder1/{DateTime.Now.AddDays(-1):yyyy-MM-dd}.md",
                     $"/folder1/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md",
                     $"/folder1/{DateTime.Now.AddDays(new Random().Next(-500, -100)):yyyy-MM-dd}.md"
                 },
