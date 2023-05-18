@@ -98,16 +98,12 @@ public class ParserServiceTests
 
     [Test]
     public async Task ParseIntoDb_WithValidFileContents_SavesFilesIntoDatabase()
-    {        
-        var dayContext = DatabaseContextFactory.Create();
-      
-        // TODO: Fix this test!
-
+    {
         // Act
         await ParserService.ParseIntoDbAsync("pathDoesNotMatter");
 
         // Assert
-        var result = dayContext.ParsedDays.ToList();
+        var result = DayContext.ParsedDays.ToList();
         Assert.That(result.Count(), Is.EqualTo(8));
     }
 }
