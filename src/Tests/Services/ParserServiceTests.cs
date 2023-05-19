@@ -1,4 +1,4 @@
-using DailyParser.DataAccess.DatabaseContexts;
+using DailyParser.DataAccess.Extensions;
 using DailyParser.DataAccess.Models;
 using DailyParser.DataAccess.Repositories;
 using DailyParser.Parser.Constants;
@@ -8,29 +8,26 @@ using DailyParser.Tests.Fakes;
 
 namespace DailyParser.Tests.Services;
 
+[SingleThreaded]
 public class ParserServiceTests
 {
-    private IDatabaseRepository DatabaseRepository { get; set; } = null!;
-    private IFileSystemRepository FileSystemRepository { get; set; } = null!;
-    private IParserService ParserService { get; set; } = null!;
-    private DayContext DayContext { get; set; } = null!;
-
     [SetUp]
-    public void Setup()
-    {
-        // Setup is run before each test so the database is recreated each time
-        DayContext = DatabaseContextFactory.Create();
-        DatabaseRepository = new DatabaseRepository(DayContext);
-        FileSystemRepository = new FileSystemRepository(new DirectoryFake(), new FileReaderFake());
-
-        ParserService = new ParserService(DatabaseRepository, FileSystemRepository);
-    }
+    public void Setup() { }
 
     [Test]
     public async Task ParseTextAsync_WithContentNotMatchingSearchedForText_ReturnsAListOfAllFilesWithEmptyTexts()
     {
         // Arrange
-        var parserService = new ParserService(DatabaseRepository, FileSystemRepository);
+        var dayContext = DatabaseContextFactory.Create(Guid.NewGuid().ToString());
+        var databaseRepository = new DatabaseRepository(dayContext);
+        var fileSystemRepository = new FileSystemRepository(
+            new DirectoryFake(),
+            new FileReaderFake()
+        );
+
+        var parserService = new ParserService(databaseRepository, fileSystemRepository);
+
+        // Arrange
         var fileContent = FileContentFactory.CreateInvalidFileContents(3);
 
         // Act
@@ -46,10 +43,20 @@ public class ParserServiceTests
     public async Task ParseTextAsync_WithContentMatchingSearchedForText_ReturnsAListOfAllFilesWithMatchedTextAsTexts()
     {
         // Arrange
+        var dayContext = DatabaseContextFactory.Create(Guid.NewGuid().ToString());
+        var databaseRepository = new DatabaseRepository(dayContext);
+        var fileSystemRepository = new FileSystemRepository(
+            new DirectoryFake(),
+            new FileReaderFake()
+        );
+
+        var parserService = new ParserService(databaseRepository, fileSystemRepository);
+
+        // Arrange
         var fileContent = FileContentFactory.CreateValidFileContents(3);
 
         // Act
-        var result = await ParserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count()));
@@ -61,11 +68,21 @@ public class ParserServiceTests
     public async Task ParseTextAsync_WithMixedContentMatchingSearchedForText_ReturnsAListOfAllFilesWithMatchedTextAsTexts()
     {
         // Arrange
+        var dayContext = DatabaseContextFactory.Create(Guid.NewGuid().ToString());
+        var databaseRepository = new DatabaseRepository(dayContext);
+        var fileSystemRepository = new FileSystemRepository(
+            new DirectoryFake(),
+            new FileReaderFake()
+        );
+
+        var parserService = new ParserService(databaseRepository, fileSystemRepository);
+
+        // Arrange
         var fileContent = FileContentFactory.CreateValidFileContents(1).ToList();
         fileContent.AddRange(FileContentFactory.CreateInvalidFileContents(1));
 
         // Act
-        var result = await ParserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count));
@@ -78,6 +95,16 @@ public class ParserServiceTests
     public async Task ParseTextAsync_WithDateOnlyName_CorrectlyStripsPathAndExtensionFromName()
     {
         // Arrange
+        var dayContext = DatabaseContextFactory.Create(Guid.NewGuid().ToString());
+        var databaseRepository = new DatabaseRepository(dayContext);
+        var fileSystemRepository = new FileSystemRepository(
+            new DirectoryFake(),
+            new FileReaderFake()
+        );
+
+        var parserService = new ParserService(databaseRepository, fileSystemRepository);
+
+        // Arrange
         var fileContent = new FileContent
         {
             FileName = $"{DateTime.Now:yyyy-MM-dd}",
@@ -87,7 +114,7 @@ public class ParserServiceTests
         };
 
         // Act
-        var result = await ParserService.ParseTextAsync(
+        var result = await parserService.ParseTextAsync(
             new List<FileContent> { fileContent },
             RegEx.Game
         );
@@ -99,11 +126,23 @@ public class ParserServiceTests
     [Test]
     public async Task ParseIntoDb_WithValidFileContents_SavesFilesIntoDatabase()
     {
+        // Arrange
+        var dayContext = DatabaseContextFactory.Create(Guid.NewGuid().ToString());
+        var databaseRepository = new DatabaseRepository(dayContext);
+        var fileSystemRepository = new FileSystemRepository(
+            new DirectoryFake(),
+            new FileReaderFake()
+        );
+
+        var parserService = new ParserService(databaseRepository, fileSystemRepository);
+
         // Act
-        await ParserService.ParseIntoDbAsync("pathDoesNotMatter");
+        var parseReturn = await parserService.ParseIntoDbAsync("pathDoesNotMatter");
 
         // Assert
-        var result = DayContext.ParsedDays.ToList();
+        Assert.That(parseReturn, Is.True);
+
+        var result = await databaseRepository.GetAllDaysAsync();
         Assert.That(result.Count(), Is.EqualTo(8));
     }
 
@@ -111,25 +150,37 @@ public class ParserServiceTests
     public async Task ParseIntoDb_WithExistingDayInDatabase_UpdatesExistingDayAndCreatesRest()
     {
         // Arrange
+        var dayContext = DatabaseContextFactory.Create(Guid.NewGuid().ToString());
+        var databaseRepository = new DatabaseRepository(dayContext);
+        var fileSystemRepository = new FileSystemRepository(
+            new DirectoryFake(),
+            new FileReaderFake()
+        );
+
+        var parserService = new ParserService(databaseRepository, fileSystemRepository);
+
+        // Arrange
         var existingDay = new ParsedDay
         {
-            Date = DateTime.Now.AddDays(-1),
+            Date = DateTime.Now.AddDays(-1).GetOnlyDate(),
             Games = new List<Game>
             {
                 new Game { Name = "GameThatDoesNotExist" },
                 new Game { Name = "GameThatDoesNotExist2" }
             }
         };
-        DayContext.ParsedDays.Add(existingDay);
-        DayContext.SaveChanges();
+
+        await dayContext.ParsedDays.AddAsync(existingDay);
+        await dayContext.SaveChangesAsync();
 
         // Act
-        await ParserService.ParseIntoDbAsync("pathDoesNotMatter");
+        var parseReturn = await parserService.ParseIntoDbAsync("pathDoesNotMatter");
 
         // Assert
-        var result = DayContext.ParsedDays.ToList();
-        Assert.That(result.Count(), Is.EqualTo(9));
-        Assert.That(result.First().Games.First().Name, Is.EqualTo("GameThatDoesNotExist"));
-        Assert.That(result.First().Games.Last().Name, Is.EqualTo("GameThatDoesNotExist2"));
+        Assert.That(parseReturn, Is.True);
+
+        var result = dayContext.ParsedDays.ToList();
+        Assert.That(result.Count(), Is.EqualTo(8));
+        Assert.That(result.First().Games.Count, Is.EqualTo(0));
     }
 }

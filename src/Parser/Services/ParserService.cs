@@ -27,6 +27,7 @@ public class ParserService : IParserService
 
         var filesWithContent = await FileSystemRepository.GetFilesWithContentAsync(files);
 
+        // TODO: Why is this a list?
         var parsedText = (await ParseTextAsync(filesWithContent, RegEx.Game)).ToList();
 
         var result = await DatabaseRepository.CreateParsedDayAsync(parsedText);

@@ -53,7 +53,8 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
     {
-        var fileModels = fileModelToSave.Select(
+        // TODO: Move this out to the caller, this method should not be responsible for this
+        var parsedDaysToSave = fileModelToSave.Select(
             fileModel =>
                 new ParsedDay
                 {
@@ -67,25 +68,27 @@ public class DatabaseRepository : IDatabaseRepository
                 }
         );
 
-        // Find all days in database that are also in fileModelToSave using contains and not Any
-        var daysInDatabase = DayContext.ParsedDays
-            .Where(day => fileModels.Contains(day))
-            .ToList();
-        // var daysInDatabase = DayContext.ParsedDays
-        //     .Where(day => fileModels.Any(fileModel => fileModel.Date == day.Date))
-        //     .ToList();
-        
-        // Update all days in filemodels with the id from the database if it exists
-        foreach (var day in daysInDatabase)
+        foreach (var parsedDay in parsedDaysToSave)
         {
-            var dayInFileModels = fileModels.FirstOrDefault(fileModel => fileModel.Date == day.Date);
-            if (dayInFileModels != null)
-            {
-                dayInFileModels.Id = day.Id;
-            }
+            await AddOrUpdateAsync(parsedDay);
         }
 
-        await DayContext.ParsedDays.AddRangeAsync(fileModels);
-        return await DayContext.SaveChangesAsync() != 0;
+        var saveResult = await DayContext.SaveChangesAsync();
+
+        return saveResult > 0;
+    }
+
+    private async Task AddOrUpdateAsync(ParsedDay parsedDay)
+    {
+        var exists = DayContext.ParsedDays.FirstOrDefault(day => day.Date == parsedDay.Date);
+
+        if (exists != null)
+        {
+            exists.Games = parsedDay.Games;
+        }
+        else
+        {
+            await DayContext.ParsedDays.AddAsync(parsedDay);
+        }
     }
 }
