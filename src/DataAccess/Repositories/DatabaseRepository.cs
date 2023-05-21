@@ -84,7 +84,19 @@ public class DatabaseRepository : IDatabaseRepository
 
         if (exists != null)
         {
-            exists.Games = parsedDay.Games;
+            // Add games that does not exist in the database
+            foreach (var game in parsedDay.Games)
+            {
+                Console.WriteLine($"On day {parsedDay.Date} game {game.Name}");
+
+                var gameExists = exists.Games.FirstOrDefault(g => g.Name == game.Name);
+
+                if (gameExists == null)
+                {
+                    Console.WriteLine($"Adding game {game.Name} because it does not exist");
+                    exists.Games.Add(game);
+                }
+            }
         }
         else
         {

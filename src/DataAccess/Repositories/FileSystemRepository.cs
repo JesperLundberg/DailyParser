@@ -36,17 +36,16 @@ public class FileSystemRepository : IFileSystemRepository
         IEnumerable<FileNameAndPath> files
     )
     {
-        // var fileTasks = new List<Task<FileContent>>();
-        var filesToReturn = new List<FileContent>();
+        var fileTasks = new List<Task<FileContent>>();
 
         foreach (var file in files)
         {
-            filesToReturn.Add(await GetFileWithContentAsync(file));
+            fileTasks.Add(GetFileWithContentAsync(file));
         }
 
-        // await Task.WhenAll(fileTasks);
+        await Task.WhenAll(fileTasks);
 
-        return filesToReturn;
+        return fileTasks.Select(x => x.Result);
     }
 
     private IEnumerable<FileNameAndPath> GetFilesRecursively(string path)
