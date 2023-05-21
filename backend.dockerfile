@@ -20,4 +20,4 @@ RUN apk add --no-cache icu-libs
 WORKDIR /app
 COPY --from=build /app .
 
-ENTRYPOINT ["dotnet", "Api.dll", "-r linux-musl-x64"]
+ENTRYPOINT ["dotnet", "Api.dll"]

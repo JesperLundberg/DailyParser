@@ -25,6 +25,8 @@ obj/
 .idea/**/dictionaries
 .idea/**/shelf
 
+DailyParser.sln.DotSettings.user
+
 # AWS User-specific
 .idea/**/aws.xml
 

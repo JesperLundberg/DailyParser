@@ -8,12 +8,16 @@ Parses markdown files according to need. The information is stored in a database
 
 Run `sudo docker-compose` in solution root.
 
+Default configuration puts API on localhost:5000 and Frontend on localhost:3000.
+
 ## TODO
 
 - [X] Transition to alpine container for backend (ubuntu is too big)
 - [X] Fix Frontend docker container
 - [X] Use parallellism when reading the files from disk
 - [X] Make the API more RESTful
-- [ ] Make sure frontend works in the container, it seems ok but maybe not?
-- [ ] Parser can't yet be triggered, must be triggerable
+- [X] Make sure frontend works in the container, it seems ok but maybe not?
+- [X] Parser can't yet be triggered, must be triggerable
+- [X] Parser does not replace game info, it adds which gives doubles, tripples etc
 - [ ] Consolidate the namespaces? At least take a look and decide on what to do!
+- [ ] Sort out the development and prod appsettings. Use prod in docker.

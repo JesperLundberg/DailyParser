@@ -13,7 +13,7 @@ public class ParsedDayExtensionTests
         var dto = parsedDay.ToDto();
 
         Assert.That(dto, Is.Not.Null);
-        Assert.That(dto.Date, Is.EqualTo(DateTime.MinValue.ToShortDateString()));
+        Assert.That(dto.Date, Is.EqualTo(DateTime.MinValue.ToString("yyyy-MM-dd")));
         Assert.That(dto.Games, Is.Empty);
     }
 
@@ -25,7 +25,7 @@ public class ParsedDayExtensionTests
         var dto = parsedDay.ToDto();
 
         Assert.That(dto, Is.Not.Null);
-        Assert.That(dto.Date, Is.EqualTo(parsedDay.Date.ToShortDateString()));
+        Assert.That(dto.Date, Is.EqualTo(parsedDay.Date.ToString("yyyy-MM-dd")));
         Assert.That(dto.Games, Is.Empty);
     }
 
@@ -45,7 +45,7 @@ public class ParsedDayExtensionTests
         var dto = parsedDay.ToDto();
 
         Assert.That(dto, Is.Not.Null);
-        Assert.That(dto.Date, Is.EqualTo(parsedDay.Date.ToShortDateString()));
+        Assert.That(dto.Date, Is.EqualTo(parsedDay.Date.ToString("yyyy-MM-dd")));
         Assert.That(dto.Games, Is.Not.Empty);
         Assert.That(dto.Games.Count, Is.EqualTo(2));
         Assert.That(dto.Games.First().Name, Is.EqualTo("Outcast"));

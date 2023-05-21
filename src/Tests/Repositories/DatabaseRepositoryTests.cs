@@ -14,7 +14,7 @@ public class DatabaseRepositoryTests
     public void Setup()
     {
         // Setup is run before each test so the database is recreated each time
-        DayContext = DatabaseContextFactory.Create();
+        DayContext = DatabaseContextFactory.Create(Guid.NewGuid().ToString());
         DatabaseRepository = new DatabaseRepository(DayContext);
     }
 

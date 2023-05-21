@@ -35,7 +35,11 @@ public class DatabaseRepository : IDatabaseRepository
     {
         return await DayContext.ParsedDays
             .Include(p => p.Games)
-            .Where(game => game.Date.GetOnlyDate() >= fromDate.GetOnlyDate() && game.Date.GetOnlyDate() <= toDate.GetOnlyDate())
+            .Where(
+                game =>
+                    game.Date.GetOnlyDate() >= fromDate.GetOnlyDate()
+                    && game.Date.GetOnlyDate() <= toDate.GetOnlyDate()
+            )
             .ToListAsync();
     }
 
@@ -49,19 +53,57 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
     {
-        var fileModels = fileModelToSave.Select(
+        // TODO: Move this out to the caller, this method should not be responsible for this
+        var parsedDaysToSave = fileModelToSave.Select(
             fileModel =>
                 new ParsedDay
                 {
                     Id = default,
-                    Date = DateTime.TryParse(fileModel.Name, out var date) ? date.GetOnlyDate() : default,
+                    Date = DateTime.TryParse(fileModel.Name, out var date)
+                        ? date.GetOnlyDate()
+                        : default,
                     Games = fileModel.Texts
                         .Select(x => new Game { Id = default, Name = x })
                         .ToList()
                 }
         );
 
-        await DayContext.ParsedDays.AddRangeAsync(fileModels);
-        return await DayContext.SaveChangesAsync() != 0;
+        foreach (var parsedDay in parsedDaysToSave)
+        {
+            await AddOrUpdateAsync(parsedDay);
+        }
+
+        var saveResult = await DayContext.SaveChangesAsync();
+
+        return saveResult > 0;
+    }
+
+    private async Task AddOrUpdateAsync(ParsedDay parsedDay)
+    {
+        var exists = DayContext.ParsedDays
+            .Include(x => x.Games)
+            .FirstOrDefault(day => day.Date == parsedDay.Date);
+
+        if (exists != null)
+        {
+            // TODO: Can this be rewritten in a better way?
+            // Add games that does not exist in the database
+            foreach (var game in parsedDay.Games)
+            {
+                Console.WriteLine($"On day {parsedDay.Date} game {game.Name}");
+
+                var gameExists = exists.Games.FirstOrDefault(g => g.Name == game.Name);
+
+                if (gameExists == null)
+                {
+                    Console.WriteLine($"Adding game {game.Name} because it does not exist");
+                    exists.Games.Add(game);
+                }
+            }
+        }
+        else
+        {
+            await DayContext.ParsedDays.AddAsync(parsedDay);
+        }
     }
 }

@@ -16,6 +16,8 @@ services:
             dockerfile: backend.dockerfile
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
+        volumes:
+          - /home/jesper/Dropbox/Obsidian/daily/:/files/
         depends_on:
             - db
     db:

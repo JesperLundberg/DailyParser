@@ -5,10 +5,10 @@ namespace DailyParser.Tests.Factories;
 
 public static class DatabaseContextFactory
 {
-    public static DayContext Create()
+    public static DayContext Create(string name)
     {
         var options = new DbContextOptionsBuilder<DayContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .UseInMemoryDatabase(name)
             .Options;
 
         return new DayContext(options);
