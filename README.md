@@ -18,5 +18,6 @@ Default configuration puts API on localhost:5000 and Frontend on localhost:3000.
 - [X] Make the API more RESTful
 - [X] Make sure frontend works in the container, it seems ok but maybe not?
 - [X] Parser can't yet be triggered, must be triggerable
-- [ ] Parser does not replace game info, it adds which gives doubles, tripples etc
+- [X] Parser does not replace game info, it adds which gives doubles, tripples etc
 - [ ] Consolidate the namespaces? At least take a look and decide on what to do!
+- [ ] Sort out the development and prod appsettings. Use prod in docker.

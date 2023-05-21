@@ -80,10 +80,13 @@ public class DatabaseRepository : IDatabaseRepository
 
     private async Task AddOrUpdateAsync(ParsedDay parsedDay)
     {
-        var exists = DayContext.ParsedDays.FirstOrDefault(day => day.Date == parsedDay.Date);
+        var exists = DayContext.ParsedDays
+            .Include(x => x.Games)
+            .FirstOrDefault(day => day.Date == parsedDay.Date);
 
         if (exists != null)
         {
+            // TODO: Can this be rewritten in a better way?
             // Add games that does not exist in the database
             foreach (var game in parsedDay.Games)
             {
