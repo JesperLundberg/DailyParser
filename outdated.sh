@@ -19,7 +19,7 @@ do
     for package in $packages
     do
       echo "Updating $package"
-      output=dotnet add "$project" package $package
+      dotnet add "$project" package $package
     done
 
   fi
