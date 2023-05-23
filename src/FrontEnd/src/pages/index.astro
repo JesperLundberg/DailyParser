@@ -2,8 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 
-const result = await fetch(import.meta.env.API_BASE_PATH + 'days')
-const data = await result.json()
+const result = await fetch(import.meta.env.API_BASE_PATH + 'days');
+const data = await result.json();
+
+// Get all dto lists (game, mood, excercise etc)
+// TODO: Create a list for all dto lists
+
+// Only print those lists that have items on the cards
+
 ---
 
 <Layout title="DailyParser home">

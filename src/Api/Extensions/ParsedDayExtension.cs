@@ -11,7 +11,6 @@ public static class ParsedDayExtension
     {
       Id = parsedDay.Id,
       Date = parsedDay.Date.ToString("yyyy-MM-dd"),
-      ParsedSubCategories = parsedDay.ParsedSubCategories,
       Games = parsedDay.Games.ToDto(),
     };
   }
