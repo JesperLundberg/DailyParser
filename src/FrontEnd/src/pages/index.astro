@@ -17,7 +17,7 @@ const data = await result.json()
     <ul role="list" class=" link-card-grid">
        {data.map((day) => (
          <Card
-         href={'/game/' + day.id}
+         href={'/day/' + day.id}
           title={day.date}
           body="Games below!"
           list={day.games}
