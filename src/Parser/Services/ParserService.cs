@@ -55,7 +55,7 @@ public class ParserService : IParserService
                             .Match(x.Content, regexPattern, RegexOptions.Singleline)
                             // The first group contains the correct text
                             .Groups[1].Value
-                            .Replace(" ", string.Empty)
+                            .Trim()
                             // Split the text into lines and remove empty lines
                             .Split(Environment.NewLine)
                             .Where(y => !string.IsNullOrWhiteSpace(y))

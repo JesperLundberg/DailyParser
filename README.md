@@ -21,3 +21,6 @@ Default configuration puts API on localhost:5000 and Frontend on localhost:3000.
 - [X] Parser does not replace game info, it adds which gives doubles, tripples etc
 - [ ] Consolidate the namespaces? At least take a look and decide on what to do!
 - [ ] Sort out the development and prod appsettings. Use prod in docker.
+- [ ] Update days and games in parallell and async the same way files are read from disk (in filesystem repository)
+- [ ] Get Game data from Steam (total played time)
+- [ ] Use HyperUI components for frontend (https://www.hyperui.dev/)

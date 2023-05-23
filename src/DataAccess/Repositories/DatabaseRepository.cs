@@ -68,6 +68,7 @@ public class DatabaseRepository : IDatabaseRepository
                 }
         );
 
+        // TODO: Do this in parallell async as well (the same way as in filesystem)
         foreach (var parsedDay in parsedDaysToSave)
         {
             await AddOrUpdateAsync(parsedDay);
@@ -90,13 +91,10 @@ public class DatabaseRepository : IDatabaseRepository
             // Add games that does not exist in the database
             foreach (var game in parsedDay.Games)
             {
-                Console.WriteLine($"On day {parsedDay.Date} game {game.Name}");
-
                 var gameExists = exists.Games.FirstOrDefault(g => g.Name == game.Name);
 
                 if (gameExists == null)
                 {
-                    Console.WriteLine($"Adding game {game.Name} because it does not exist");
                     exists.Games.Add(game);
                 }
             }
