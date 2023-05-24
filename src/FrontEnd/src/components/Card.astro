@@ -3,10 +3,10 @@ export interface Props {
 	title: string;
 	body: string;
 	href: string;
-  list: [];
+  categories: [];
 }
 
-const { href, title, body, list } = Astro.props;
+const { href, title, body, categories } = Astro.props;
 ---
 
 <li class="link-card">
@@ -17,14 +17,14 @@ const { href, title, body, list } = Astro.props;
 		</h2>
 		<p>
     <h3>{body}</h3>
-      <ul>
-        {list.map((item) => (
-          <li>{item.name}</li>
-        ))}
-      </ul>
+    <ul>
+      {categories.map((item) => (
+        <li>{item}</li>
+      ))}
 		</p>
 	</a>
 </li>
+
 <style>
 	.link-card {
 		list-style: none;

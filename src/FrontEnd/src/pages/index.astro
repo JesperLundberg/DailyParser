@@ -5,11 +5,18 @@ import Card from '../components/Card.astro';
 const result = await fetch(import.meta.env.API_BASE_PATH + 'days');
 const data = await result.json();
 
-// Get all dto lists (game, mood, excercise etc)
-// TODO: Create a list for all dto lists
+const dayWithCategory = data.map((day) => {
+  const categories = [];
 
-// Only print those lists that have items on the cards
+  // add the name of all arrays on day as categories
+  for (const key in day) {
+    if (Array.isArray(day[key]) && day[key].length > 0) {
+      categories.push(key);
+    }
+  }
 
+  return { ...day, categories };
+});
 ---
 
 <Layout title="DailyParser home">
@@ -21,12 +28,12 @@ const data = await result.json();
 		</p>
 
     <ul role="list" class=" link-card-grid">
-       {data.map((day) => (
+       {dayWithCategory.map((day) => (
          <Card
-         href={'/day/' + day.id}
+         href={"/day/" + day.id}
           title={day.date}
-          body="Games below!"
-          list={day.games}
+          body="This day contains the following categories:"
+          categories={day.categories}
         />
       ))}
     </ul>

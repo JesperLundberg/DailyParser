@@ -10,17 +10,35 @@ const thisDayData = await thisDay.json();
 const games = thisDayData.games;
 ---
 
-<Layout title="Welcome to Astro.">
-  <div id="date" class="text-center">{thisDayData.date}</div>
-	<main>
-    <figure class="drop-shadow-md md:flex bg-slate-100 rounded-xl p-8 md:p-0 dark:bg-slate-800">
-      <div class="pt-6 md:p-8 text-center md:t space-y-4">
+<h1>{thisDayData.date}</h1>
 
-        {games.map((game) => (
-          <div id={game.name.replace(/\s/g, "")} class="">{game.name}</div>
-        ))}
+<a
+  href="#"
+  class="relative block rounded-sm border-t-4 border-pink-600 p-4 shadow-xl sm:p-6 lg:p-8"
+>
+  <div class="flex items-center gap-4">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 text-pink-600 sm:h-8 sm:w-8"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 10V3L4 14h7v7l9-11h-7z"
+      />
+    </svg>
 
-      </div>
-    </figure>
-	</main>
-</Layout>
+      <h3 class="text-3xl font-bold sm:text-4xl">Games</h3>
+  </div>
+
+  <p class="mt-4 font-medium text-gray-500">
+    {games.map((game) => (
+          <div>{game.name}</div>
+    ))}
+
+  </p>
+</a>
