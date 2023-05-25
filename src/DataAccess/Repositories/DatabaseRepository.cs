@@ -53,15 +53,20 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
     {
+        // Remove all days that do not parse into a valid date
+        fileModelToSave = fileModelToSave.Where(
+            fileModel =>
+                DateTime.TryParse(fileModel.Name, out var date)
+                && date.GetOnlyDate() != default
+        );
+
         // TODO: Move this out to the caller, this method should not be responsible for this
         var parsedDaysToSave = fileModelToSave.Select(
             fileModel =>
                 new ParsedDay
                 {
                     Id = default,
-                    Date = DateTime.TryParse(fileModel.Name, out var date)
-                        ? date.GetOnlyDate()
-                        : default,
+                    Date = DateTime.Parse(fileModel.Name),
                     Games = fileModel.Texts
                         .Select(x => new Game { Id = default, Name = x })
                         .ToList()
