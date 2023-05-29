@@ -53,26 +53,40 @@ public class DatabaseRepository : IDatabaseRepository
 
     public async Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave)
     {
+        // Remove all days that do not parse into a valid date
+        fileModelToSave = fileModelToSave.Where(
+            fileModel =>
+                DateTime.TryParse(fileModel.Name, out var date)
+                && date.GetOnlyDate() != default
+        );
+
         // TODO: Move this out to the caller, this method should not be responsible for this
         var parsedDaysToSave = fileModelToSave.Select(
             fileModel =>
                 new ParsedDay
                 {
                     Id = default,
-                    Date = DateTime.TryParse(fileModel.Name, out var date)
-                        ? date.GetOnlyDate()
-                        : default,
+                    Date = DateTime.Parse(fileModel.Name),
                     Games = fileModel.Texts
                         .Select(x => new Game { Id = default, Name = x })
                         .ToList()
                 }
         );
 
+        // TODO: Do this in parallell async as well (the same way as in filesystem)
+        var parsedDayTasks = new List<Task>();
+
         foreach (var parsedDay in parsedDaysToSave)
         {
-            await AddOrUpdateAsync(parsedDay);
+            parsedDayTasks.Add(AddOrUpdateAsync(parsedDay));
         }
 
+        await Task.WhenAll(parsedDayTasks);
+        // foreach (var parsedDay in parsedDaysToSave)
+        // {
+        //     await AddOrUpdateAsync(parsedDay);
+        // }
+        
         var saveResult = await DayContext.SaveChangesAsync();
 
         return saveResult > 0;
@@ -90,13 +104,10 @@ public class DatabaseRepository : IDatabaseRepository
             // Add games that does not exist in the database
             foreach (var game in parsedDay.Games)
             {
-                Console.WriteLine($"On day {parsedDay.Date} game {game.Name}");
-
                 var gameExists = exists.Games.FirstOrDefault(g => g.Name == game.Name);
 
                 if (gameExists == null)
                 {
-                    Console.WriteLine($"Adding game {game.Name} because it does not exist");
                     exists.Games.Add(game);
                 }
             }
