@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# get list of projects in solution but ignore the first two lines
+# Get list of projects in solution but ignore the first two lines
 # which are 'Project(s)' and '-------'
 projects=($(dotnet sln list | awk 'NR>2'))
 
@@ -13,14 +13,18 @@ do
     echo "No outdated packages found."
   else
     # Split the list of outdated packages into an array
-    packages=$(echo $outdated | tr " " "\n")
+    readarray -t packages <<<"$outdated"
 
     # Loop through each outdated package and update it
-    for package in $packages
+    for package in "${packages[@]}"
     do
       echo "Updating $package"
-      dotnet add "$project" package $package
+      output=$(dotnet add "$project" package "$package" 2>&1)
+      if [ $? -eq 0 ]; then
+        echo "Successfully updated $package"
+      else
+        echo "Failed to update $package: $output"
+      fi
     done
-
   fi
 done
