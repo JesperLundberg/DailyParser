@@ -11,7 +11,7 @@ public static class ParsedTextFactory
         for (var i = 0; i < howManyToCreate; i++)
         {
             yield return new ParsedText{
-                Name = Guid.NewGuid().ToString(),
+                Name = DateTime.Now.AddDays(-new Random().Next(100, 500)).ToString("yyyy-MM-dd"),
                 Texts = new List<string> { "Primordia", "Outcast" }
             };
         }

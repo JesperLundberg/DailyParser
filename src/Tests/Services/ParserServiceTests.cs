@@ -1,4 +1,3 @@
-using DailyParser.DataAccess.Extensions;
 using DailyParser.DataAccess.Models;
 using DailyParser.DataAccess.Repositories;
 using DailyParser.Parser.Constants;
@@ -11,6 +10,8 @@ namespace DailyParser.Tests.Services;
 [SingleThreaded]
 public class ParserServiceTests
 {
+    private RegEx RegEx => new RegEx();
+
     [SetUp]
     public void Setup() { }
 

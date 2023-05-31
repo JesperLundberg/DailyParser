@@ -22,13 +22,16 @@ public class ParserService : IParserService
 
     public async Task<bool> ParseIntoDbAsync(string pathToFiles)
     {
-        // TODO: Make this work with all types of parsers. Rewrite this to use IParsers like in Edströms
         var files = await FileSystemRepository.GetFileListAsync(pathToFiles);
 
         var filesWithContent = await FileSystemRepository.GetFilesWithContentAsync(files);
 
-        // TODO: Why is this a list?
-        var parsedText = (await ParseTextAsync(filesWithContent, RegEx.Game)).ToList();
+        var parsedText = new List<ParsedText>();
+
+        foreach (var regEx in GetAllRegEx())
+        {
+            parsedText.AddRange(await ParseTextAsync(filesWithContent, regEx!));
+        }
 
         var result = await DatabaseRepository.CreateParsedDayAsync(parsedText);
 
@@ -42,7 +45,7 @@ public class ParserService : IParserService
     {
         // Get the parsed text from the content
         var parsedText = contentToBeParsed
-            // Remove all files that does not have a name that is a date in the format yyyy-MM-dd
+            // Remove all files that does not have a name that is a date in the format described in Regex.Date
             .Where(x => Regex.IsMatch(x.FileName, RegEx.Date))
             .Select(
                 x =>
@@ -64,5 +67,13 @@ public class ParserService : IParserService
             );
 
         return Task.FromResult(parsedText);
+    }
+
+    private IEnumerable<string?> GetAllRegEx()
+    {
+        var regEx = new RegEx();
+        var regExType = typeof(RegEx).GetProperties();
+
+        return regExType.Select(x => x.GetValue(regEx)!.ToString());
     }
 }
