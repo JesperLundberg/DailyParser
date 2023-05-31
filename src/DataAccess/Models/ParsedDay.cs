@@ -5,4 +5,5 @@ public class ParsedDay
     public Guid Id { get; set; }
     public DateTime Date { get; init; }
     public List<Game> Games { get; set; } = new();
+    public List<Excercise> Excercises { get; set; } = new();
 }

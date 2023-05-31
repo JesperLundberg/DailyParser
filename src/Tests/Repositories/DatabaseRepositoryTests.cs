@@ -8,7 +8,7 @@ namespace DailyParser.Tests.Repositories;
 public class DatabaseRepositoryTests
 {
     private IDatabaseRepository DatabaseRepository { get; set; } = null!;
-    public DayContext DayContext { get; set; } = null!;
+    private DayContext DayContext { get; set; } = null!;
 
     [SetUp]
     public void Setup()

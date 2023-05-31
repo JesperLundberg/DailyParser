@@ -73,7 +73,6 @@ public class DatabaseRepository : IDatabaseRepository
                 }
         );
 
-        // TODO: Do this in parallell async as well (the same way as in filesystem)
         var parsedDayTasks = new List<Task>();
 
         foreach (var parsedDay in parsedDaysToSave)
@@ -82,10 +81,6 @@ public class DatabaseRepository : IDatabaseRepository
         }
 
         await Task.WhenAll(parsedDayTasks);
-        // foreach (var parsedDay in parsedDaysToSave)
-        // {
-        //     await AddOrUpdateAsync(parsedDay);
-        // }
         
         var saveResult = await DayContext.SaveChangesAsync();
 

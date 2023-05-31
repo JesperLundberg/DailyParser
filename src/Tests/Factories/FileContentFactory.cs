@@ -6,14 +6,22 @@ public static class FileContentFactory
 {
     public static IEnumerable<FileContent> CreateValidFileContents(int howManyToCreate)
     {
-      var randomDate = DateTime.Now.AddDays(new Random().Next(-500, -100));
+        var randomDate = DateTime.Now.AddDays(new Random().Next(-500, -100));
         for (var i = 0; i < howManyToCreate; i++)
         {
             yield return new FileContent
             {
-                FileName = DateTime.Now.AddDays(new Random().Next(-500, -100)).ToString("yyyy-MM-dd"),
+                FileName = DateTime.Now
+                    .AddDays(new Random().Next(-500, -100))
+                    .ToString("yyyy-MM-dd"),
                 Content =
                     @$"
+                    #### Checklista
+                    - [x] Ute/Träning ✅ 2023-05-30
+	                  Promenad runt Vasasjön med Anna
+	                  Städade stora bilen innuti och spolade av båda utanpå
+                    - [x] Cubing ✅ 2023-05-30
+
                     Text that is not used with whitespaces after     
                     #### Vad spelar jag?
                     Primordia
@@ -30,13 +38,16 @@ public static class FileContentFactory
         {
             yield return new FileContent
             {
-                FileName = DateTime.Now.AddDays(new Random().Next(-500, -100)).ToString("yyyy-MM-dd"),
-                Content = @$"This is not a valid
+                FileName = DateTime.Now
+                    .AddDays(new Random().Next(-500, -100))
+                    .ToString("yyyy-MM-dd"),
+                Content =
+                    @$"This is not a valid
                   file content {Guid.NewGuid().ToString()}"
             };
         }
     }
-    
+
     public static IEnumerable<FileContent> CreateFileWithValidDateName(int howManyToCreate)
     {
         for (var i = 0; i < howManyToCreate; i++)
@@ -47,7 +58,8 @@ public static class FileContentFactory
             yield return new FileContent
             {
                 FileName = $"/random/path/here/{date:yyyy-MM-dd}.md",
-                Content = @$"This is not a valid
+                Content =
+                    @$"This is not a valid
                   file content {Guid.NewGuid().ToString()}"
             };
         }

@@ -40,7 +40,7 @@ public class ParserService : IParserService
 
     public Task<IEnumerable<ParsedText>> ParseTextAsync(
         IEnumerable<FileContent> contentToBeParsed,
-        string regexPattern
+        (string Name, string? Pattern) regex
     )
     {
         // Get the parsed text from the content
@@ -53,9 +53,10 @@ public class ParserService : IParserService
                     {
                         // Strip everything but the filename
                         Name = x.FileName,
+                        Category = regex.Name,
                         Texts = Regex
                             // Match the regex pattern and use singleline as the string is a single line
-                            .Match(x.Content, regexPattern, RegexOptions.Singleline)
+                            .Match(x.Content, regex.Pattern!, RegexOptions.Singleline)
                             // The first group contains the correct text
                             .Groups[1].Value
                             // Split the text into lines and remove empty lines
@@ -69,11 +70,11 @@ public class ParserService : IParserService
         return Task.FromResult(parsedText);
     }
 
-    private IEnumerable<string?> GetAllRegEx()
+    private IEnumerable<(string Name, string? Pattern)> GetAllRegEx()
     {
         var regEx = new RegEx();
         var regExType = typeof(RegEx).GetProperties();
 
-        return regExType.Select(x => x.GetValue(regEx)!.ToString());
+        return regExType.Select(x => (Name: x.Name, Pattern: x.GetValue(regEx)!.ToString()));
     }
 }
