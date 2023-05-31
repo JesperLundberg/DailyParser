@@ -67,6 +67,7 @@ public class DatabaseRepository : IDatabaseRepository
                 {
                     Id = default,
                     Date = DateTime.Parse(fileModel.Name),
+                    Category = fileModel.Category,
                     Games = fileModel.Texts
                         .Select(x => new Game { Id = default, Name = x })
                         .ToList()

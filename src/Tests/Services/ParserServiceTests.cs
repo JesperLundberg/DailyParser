@@ -32,7 +32,7 @@ public class ParserServiceTests
         var fileContent = FileContentFactory.CreateInvalidFileContents(3);
 
         // Act
-        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, ("Game", RegEx.Game));
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(3));
@@ -57,7 +57,7 @@ public class ParserServiceTests
         var fileContent = FileContentFactory.CreateValidFileContents(3);
 
         // Act
-        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, ("Game", RegEx.Game));
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count()));
@@ -83,7 +83,7 @@ public class ParserServiceTests
         fileContent.AddRange(FileContentFactory.CreateInvalidFileContents(1));
 
         // Act
-        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, ("Game", RegEx.Game));
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count));
@@ -117,7 +117,7 @@ public class ParserServiceTests
         // Act
         var result = await parserService.ParseTextAsync(
             new List<FileContent> { fileContent },
-            RegEx.Game
+            ("Game", RegEx.Game)
         );
 
         // Assert
