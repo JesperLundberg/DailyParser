@@ -22,7 +22,6 @@ public class DatabaseRepositoryTests
     public async Task SaveFilesWithContentInDatabaseAsync_WithValidFileContent_SavesInDatabase()
     {
         // Arrange
-        var fileContent = FileContentFactory.CreateValidFileContents(1);
         var parsedText = ParsedTextFactory.CreateValidParsedTexts(1);
 
         // Act
