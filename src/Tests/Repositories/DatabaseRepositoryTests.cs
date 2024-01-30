@@ -8,7 +8,7 @@ namespace DailyParser.Tests.Repositories;
 public class DatabaseRepositoryTests
 {
     private IDatabaseRepository DatabaseRepository { get; set; } = null!;
-    public DayContext DayContext { get; set; } = null!;
+    private DayContext DayContext { get; set; } = null!;
 
     [SetUp]
     public void Setup()
@@ -18,11 +18,17 @@ public class DatabaseRepositoryTests
         DatabaseRepository = new DatabaseRepository(DayContext);
     }
 
+    [TearDown]
+    public void TearDown()
+    {
+        DatabaseRepository.Dispose();
+        DayContext.Dispose();
+    }
+
     [Test]
     public async Task SaveFilesWithContentInDatabaseAsync_WithValidFileContent_SavesInDatabase()
     {
         // Arrange
-        var fileContent = FileContentFactory.CreateValidFileContents(1);
         var parsedText = ParsedTextFactory.CreateValidParsedTexts(1);
 
         // Act

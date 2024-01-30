@@ -22,13 +22,16 @@ public class ParserService : IParserService
 
     public async Task<bool> ParseIntoDbAsync(string pathToFiles)
     {
-        // TODO: Make this work with all types of parsers. Rewrite this to use IParsers like in Edströms
         var files = await FileSystemRepository.GetFileListAsync(pathToFiles);
 
         var filesWithContent = await FileSystemRepository.GetFilesWithContentAsync(files);
 
-        // TODO: Why is this a list?
-        var parsedText = (await ParseTextAsync(filesWithContent, RegEx.Game)).ToList();
+        var parsedText = new List<ParsedText>();
+
+        foreach (var regEx in GetAllRegEx())
+        {
+            parsedText.AddRange(await ParseTextAsync(filesWithContent, regEx!));
+        }
 
         var result = await DatabaseRepository.CreateParsedDayAsync(parsedText);
 
@@ -37,12 +40,12 @@ public class ParserService : IParserService
 
     public Task<IEnumerable<ParsedText>> ParseTextAsync(
         IEnumerable<FileContent> contentToBeParsed,
-        string regexPattern
+        (string Name, string? Pattern) regex
     )
     {
         // Get the parsed text from the content
         var parsedText = contentToBeParsed
-            // Remove all files that does not have a name that is a date in the format yyyy-MM-dd
+            // Remove all files that does not have a name that is a date in the format described in Regex.Date
             .Where(x => Regex.IsMatch(x.FileName, RegEx.Date))
             .Select(
                 x =>
@@ -50,9 +53,10 @@ public class ParserService : IParserService
                     {
                         // Strip everything but the filename
                         Name = x.FileName,
+                        Category = regex.Name,
                         Texts = Regex
                             // Match the regex pattern and use singleline as the string is a single line
-                            .Match(x.Content, regexPattern, RegexOptions.Singleline)
+                            .Match(x.Content, regex.Pattern!, RegexOptions.Singleline)
                             // The first group contains the correct text
                             .Groups[1].Value
                             // Split the text into lines and remove empty lines
@@ -64,5 +68,13 @@ public class ParserService : IParserService
             );
 
         return Task.FromResult(parsedText);
+    }
+
+    private IEnumerable<(string Name, string? Pattern)> GetAllRegEx()
+    {
+        var regEx = new RegEx();
+        var regExType = typeof(RegEx).GetProperties();
+
+        return regExType.Select(x => (Name: x.Name, Pattern: x.GetValue(regEx)!.ToString()));
     }
 }

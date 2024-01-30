@@ -1,4 +1,3 @@
-using DailyParser.DataAccess.Extensions;
 using DailyParser.DataAccess.Models;
 using DailyParser.DataAccess.Repositories;
 using DailyParser.Parser.Constants;
@@ -11,6 +10,8 @@ namespace DailyParser.Tests.Services;
 [SingleThreaded]
 public class ParserServiceTests
 {
+    private RegEx RegEx => new RegEx();
+
     [SetUp]
     public void Setup() { }
 
@@ -31,12 +32,12 @@ public class ParserServiceTests
         var fileContent = FileContentFactory.CreateInvalidFileContents(3);
 
         // Act
-        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, ("Game", RegEx.Game));
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(3));
-        CollectionAssert.AllItemsAreNotNull(result);
-        CollectionAssert.IsEmpty(result.First().Texts);
+        Assert.That(result, Is.Not.Empty);
+        Assert.That(result.First().Texts, Is.Empty);
     }
 
     [Test]
@@ -56,7 +57,7 @@ public class ParserServiceTests
         var fileContent = FileContentFactory.CreateValidFileContents(3);
 
         // Act
-        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, ("Game", RegEx.Game));
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count()));
@@ -82,7 +83,7 @@ public class ParserServiceTests
         fileContent.AddRange(FileContentFactory.CreateInvalidFileContents(1));
 
         // Act
-        var result = await parserService.ParseTextAsync(fileContent, RegEx.Game);
+        var result = await parserService.ParseTextAsync(fileContent, ("Game", RegEx.Game));
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(fileContent.Count));
@@ -116,7 +117,7 @@ public class ParserServiceTests
         // Act
         var result = await parserService.ParseTextAsync(
             new List<FileContent> { fileContent },
-            RegEx.Game
+            ("Game", RegEx.Game)
         );
 
         // Assert
