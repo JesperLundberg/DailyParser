@@ -18,6 +18,13 @@ public class DatabaseRepositoryTests
         DatabaseRepository = new DatabaseRepository(DayContext);
     }
 
+    [TearDown]
+    public void TearDown()
+    {
+        DatabaseRepository.Dispose();
+        DayContext.Dispose();
+    }
+
     [Test]
     public async Task SaveFilesWithContentInDatabaseAsync_WithValidFileContent_SavesInDatabase()
     {

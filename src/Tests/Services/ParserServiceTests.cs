@@ -36,8 +36,8 @@ public class ParserServiceTests
 
         // Assert
         Assert.That(result.Count, Is.EqualTo(3));
-        CollectionAssert.AllItemsAreNotNull(result);
-        CollectionAssert.IsEmpty(result.First().Texts);
+        Assert.That(result, Is.Not.Empty);
+        Assert.That(result.First().Texts, Is.Empty);
     }
 
     [Test]

@@ -14,4 +14,6 @@ public interface IDatabaseRepository
     Task<IEnumerable<ParsedDay>> GetDaysByFromDateAsync(DateTime fromDate);
 
     Task<bool> CreateParsedDayAsync(IEnumerable<ParsedText> fileModelToSave);
+
+    void Dispose();
 }
